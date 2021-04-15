@@ -2,21 +2,18 @@
 
 public class FireLightScript : MonoBehaviour
 {
+    [Header("Light")] 
+    [SerializeField] private float minIntensity = 2f;
+    [SerializeField] private float maxIntensity = 3f;
 
-    //This script randomly changes the intensity of light object to simulate fire
+    [SerializeField] private Light fireLight;
 
-    [Header ("Light")]
-	public float minIntensity = 2f; 
-	public float maxIntensity = 3f;
+    float _random;
 
-	public Light fireLight;
-
-	float random;
-
-	void Update()
-	{
-		random = Random.Range(0.0f, 150.0f);
-		float noise = Mathf.PerlinNoise(random, Time.time);
-		fireLight.GetComponent<Light>().intensity = Mathf.Lerp(minIntensity, maxIntensity, noise);
-	}
+    void Update()
+    {
+        _random = Random.Range(0.0f, 150.0f);
+        var noise = Mathf.PerlinNoise(_random, Time.time);
+        fireLight.GetComponent<Light>().intensity = Mathf.Lerp(minIntensity, maxIntensity, noise);
+    }
 }

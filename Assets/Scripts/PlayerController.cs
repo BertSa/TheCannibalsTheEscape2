@@ -4,12 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    private static readonly int Walk = Animator.StringToHash("Walk");
-    private static readonly int SprintJump = Animator.StringToHash("SprintJump");
-
     private Rigidbody _rb;
-    
-    [SerializeField] private Animator animator;
 
     #region Camera Movement Variables
 
@@ -33,7 +28,7 @@ public class PlayerController : MonoBehaviour
     private bool _isWalking;
 
     #region Sprint
-    
+
     private const float SprintSpeed = 7f;
     private const float SprintDuration = 5f;
     private const float SprintFOV = 80f;
@@ -44,15 +39,15 @@ public class PlayerController : MonoBehaviour
     private float _sprintCooldownReset;
     private bool _isSprinting;
     private bool _isSprintCooldown;
-    
+
     #region SprintBar
 
     private const float SprintBarWidthPercent = .3f;
     private const float SprintBarHeightPercent = .015f;
-    
+
     [SerializeField] private Image sprintBar;
 
-    private CanvasGroup _sprintBarCg;
+    [SerializeField] private CanvasGroup _sprintBarCg;
 
     #endregion
 
@@ -80,7 +75,6 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        // animator = GetComponent<Animator>();
         _crosshairObject = GetComponentInChildren<Image>();
 
         playerCamera.fieldOfView = _fov;
@@ -166,19 +160,6 @@ public class PlayerController : MonoBehaviour
 
         #endregion
 
-        #region Animation
-
-        if (_isWalking)
-            if (_isSprinting)
-                SetAnimation(false, true);
-            else
-                SetAnimation(true, false);
-        else
-            SetAnimation(false, false);
-
-        #endregion
-
-        
         CheckGround();
     }
 
@@ -229,9 +210,7 @@ public class PlayerController : MonoBehaviour
             _rb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
 
-
         #endregion
-        
     }
 
     private void CheckGround()
@@ -256,16 +235,5 @@ public class PlayerController : MonoBehaviour
         if (!_isGrounded) return;
         _rb.AddForce(0f, JumpPower, 0f, ForceMode.Impulse);
         _isGrounded = false;
-    }
-
-    private void SetAnimation(bool walk, bool sprint)
-    {
-        // animator.SetBool("Forward", walk);
-        // animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
-        // animator.SetBool("Crouch", m_Crouching);
-        // animator.SetBool("OnGround", m_IsGrounded);
-        // animator.SetBool(Walk, walk);
-        // animator.SetBool(SprintJump, sprint);
-        // animator.SetBool("SprintSlide", sprint);
     }
 }
