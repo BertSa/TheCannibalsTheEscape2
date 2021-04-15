@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+        // animator = GetComponent<Animator>();
         _crosshairObject = GetComponentInChildren<Image>();
 
         playerCamera.fieldOfView = _fov;
@@ -236,7 +236,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        const float distance = .25f;
+        const float distance = 1f;
         var position = transform.position;
         var direction = transform.TransformDirection(Vector3.down);
 
@@ -260,7 +260,12 @@ public class PlayerController : MonoBehaviour
 
     private void SetAnimation(bool walk, bool sprint)
     {
-        animator.SetBool(Walk, walk);
-        animator.SetBool(SprintJump, sprint);
+        // animator.SetBool("Forward", walk);
+        // animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
+        // animator.SetBool("Crouch", m_Crouching);
+        // animator.SetBool("OnGround", m_IsGrounded);
+        // animator.SetBool(Walk, walk);
+        // animator.SetBool(SprintJump, sprint);
+        // animator.SetBool("SprintSlide", sprint);
     }
 }
