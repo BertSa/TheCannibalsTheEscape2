@@ -121,8 +121,7 @@ public class PlayerController : MonoBehaviour
 
         if (_isSprinting)
         {
-            playerCamera.fieldOfView =
-                Mathf.Lerp(playerCamera.fieldOfView, SprintFOV, SprintFOVStepTime * Time.deltaTime);
+            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, SprintFOV, SprintFOVStepTime * Time.deltaTime);
             _sprintRemaining -= 1 * Time.deltaTime;
             if (_sprintRemaining <= 0)
             {
