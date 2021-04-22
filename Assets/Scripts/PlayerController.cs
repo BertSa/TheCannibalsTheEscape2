@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -30,26 +29,10 @@ public class PlayerController : MonoBehaviour
     #region Sprint
 
     private const float SprintSpeed = 7f;
-    private const float SprintDuration = 5f;
     private const float SprintFOV = 80f;
     private const float SprintFOVStepTime = 10f;
 
-    private float _sprintCooldown = .5f;
-    private float _sprintRemaining;
-    private float _sprintCooldownReset;
     private bool _isSprinting;
-    private bool _isSprintCooldown;
-
-    #region SprintBar
-
-    private const float SprintBarWidthPercent = .3f;
-    private const float SprintBarHeightPercent = .015f;
-
-    [SerializeField] private Image sprintBar;
-
-    [SerializeField] private CanvasGroup _sprintBarCg;
-
-    #endregion
 
     #endregion
 
@@ -66,7 +49,7 @@ public class PlayerController : MonoBehaviour
     #region Config User
 
     private float _fov = 60f;
-    private float _mouseSensitivity = 2f;
+    private float _mouseSensitivity = 60f;
     private KeyCode _sprintKey = KeyCode.LeftShift;
     private KeyCode _jumpKey = KeyCode.Space;
 
@@ -78,9 +61,6 @@ public class PlayerController : MonoBehaviour
         _crosshairObject = GetComponentInChildren<Image>();
 
         playerCamera.fieldOfView = _fov;
-
-        _sprintRemaining = SprintDuration;
-        _sprintCooldownReset = _sprintCooldown;
     }
 
     private void Start()
@@ -89,28 +69,14 @@ public class PlayerController : MonoBehaviour
 
         _crosshairObject.sprite = crosshairImage;
         _crosshairObject.color = crosshairColor;
-
-
-        #region Sprint Bar
-
-        _sprintBarCg = GetComponentInChildren<CanvasGroup>();
-
-        sprintBar.gameObject.SetActive(true);
-
-        var sprintBarWidth = Screen.width * SprintBarWidthPercent;
-        var sprintBarHeight = Screen.height * SprintBarHeightPercent;
-
-        sprintBar.rectTransform.sizeDelta = new Vector3(sprintBarWidth - 2, sprintBarHeight - 2, 0f);
-
-        #endregion
     }
 
     private void Update()
     {
         #region Camera
 
-        _yaw += _mouseSensitivity * Input.GetAxis("Mouse X");
-        _pitch -= _mouseSensitivity * Input.GetAxis("Mouse Y");
+        _yaw += _mouseSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime;
+        _pitch -= _mouseSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime;
 
         playerCamera.transform.eulerAngles = new Vector3(Mathf.Clamp(_pitch, -MAXLookAngle, MAXLookAngle), _yaw, 0);
         transform.eulerAngles = new Vector3(0, _yaw, 0);
@@ -121,35 +87,17 @@ public class PlayerController : MonoBehaviour
 
         if (_isSprinting)
         {
-            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, SprintFOV, SprintFOVStepTime * Time.deltaTime);
-            _sprintRemaining -= 1 * Time.deltaTime;
-            if (_sprintRemaining <= 0)
-            {
-                _isSprinting = false;
-                _isSprintCooldown = true;
-            }
+            playerCamera.fieldOfView =
+                Mathf.Lerp(playerCamera.fieldOfView, SprintFOV, SprintFOVStepTime * Time.deltaTime);
         }
         else
         {
-            _sprintRemaining = Mathf.Clamp(_sprintRemaining += 1 * Time.deltaTime, 0, SprintDuration);
-        }
-
-        if (_isSprintCooldown)
-        {
-            _sprintCooldown -= 1 * Time.deltaTime;
-            if (_sprintCooldown <= 0)
-            {
-                _isSprintCooldown = false;
-            }
-        }
-        else
-        {
-            _sprintCooldown = _sprintCooldownReset;
+            playerCamera.fieldOfView =
+                Mathf.Lerp(playerCamera.fieldOfView, _fov, SprintFOVStepTime * Time.deltaTime);
         }
 
 
-        var sprintRemainingPercent = _sprintRemaining / SprintDuration;
-        sprintBar.transform.localScale = new Vector3(sprintRemainingPercent, 1f, 1f);
+        FireLightScript.Instance.SetRange(_isSprinting);
 
         #endregion
 
@@ -170,7 +118,7 @@ public class PlayerController : MonoBehaviour
 
         _isWalking = (targetVelocity.x != 0 || targetVelocity.z != 0 && _isGrounded);
 
-        if (Input.GetKey(_sprintKey) && _sprintRemaining > 0f && !_isSprintCooldown)
+        if (Input.GetKey(_sprintKey))
         {
             targetVelocity = transform.TransformDirection(targetVelocity) * SprintSpeed;
 
@@ -180,11 +128,9 @@ public class PlayerController : MonoBehaviour
             velocityChange.z = Mathf.Clamp(velocityChange.z, -MAXVelocityChange, MAXVelocityChange);
             velocityChange.y = 0;
 
-            if (velocityChange.x != 0 || velocityChange.z != 0)
+            if (_isWalking && velocityChange.x != 0 || velocityChange.z != 0)
             {
                 _isSprinting = true;
-
-                _sprintBarCg.alpha += 5 * Time.deltaTime;
             }
 
             _rb.AddForce(velocityChange, ForceMode.VelocityChange);
@@ -192,11 +138,6 @@ public class PlayerController : MonoBehaviour
         else
         {
             _isSprinting = false;
-
-            if (Math.Abs(_sprintRemaining - SprintDuration) == 0)
-            {
-                _sprintBarCg.alpha -= 3 * Time.deltaTime;
-            }
 
             targetVelocity = transform.TransformDirection(targetVelocity) * WalkSpeed;
 
@@ -214,7 +155,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        const float distance = 1f;
+        const float distance = 1.25f;
         var position = transform.position;
         var direction = transform.TransformDirection(Vector3.down);
 

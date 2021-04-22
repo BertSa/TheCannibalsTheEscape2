@@ -144,7 +144,6 @@ MonoBehaviour:
   playerCamera: {fileID: 833428578866741703}
   crosshairImage: {fileID: 21300000, guid: be4ce60e2c9768c44b9b10b9c5258045, type: 3}
   crosshairColor: {r: 1, g: 1, b: 1, a: 1}
-  sprintBar: {fileID: 853209316677138882}
 --- !u!54 &822147287655446227
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -608,6 +607,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 848908842879530319}
     m_Modifications:
+    - target: {fileID: 8681314855308157637, guid: c9601bd40942723709cbd78bf55f8909,
+        type: 3}
+      propertyPath: fireParticle
+      value: 
+      objectReference: {fileID: 654688703478454717}
     - target: {fileID: 8782425407105101409, guid: c9601bd40942723709cbd78bf55f8909,
         type: 3}
       propertyPath: m_RootOrder
@@ -673,6 +677,12 @@ PrefabInstance:
 --- !u!4 &853867824495599037 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8782425407105101409, guid: c9601bd40942723709cbd78bf55f8909,
+    type: 3}
+  m_PrefabInstance: {fileID: 8230606647076025308}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &654688703478454717 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8875775503724980833, guid: c9601bd40942723709cbd78bf55f8909,
     type: 3}
   m_PrefabInstance: {fileID: 8230606647076025308}
   m_PrefabAsset: {fileID: 0}
