@@ -95,9 +95,8 @@ public class PlayerController : MonoBehaviour
             playerCamera.fieldOfView =
                 Mathf.Lerp(playerCamera.fieldOfView, _fov, SprintFOVStepTime * Time.deltaTime);
         }
-
-
-        FireLightScript.Instance.SetRange(_isSprinting);
+        
+        TorchScript.Instance.SetRange(_isSprinting);
 
         #endregion
 

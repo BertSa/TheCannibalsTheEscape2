@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using static GameManager.EndingStatus;
 
-public class FireLightScript : Singleton<FireLightScript>
+public class TorchScript : Singleton<TorchScript>
 {
     private const float DefaultScale = 2.0f;
     private const float MINIntensity = 2f;
@@ -14,6 +15,8 @@ public class FireLightScript : Singleton<FireLightScript>
     private float _random;
 
     private float _torchHealth;
+    private float _percentageHealth;
+
 
     private void Start()
     {
@@ -23,22 +26,15 @@ public class FireLightScript : Singleton<FireLightScript>
 
     private void Update()
     {
-        var percentage = (_torchHealth / MaxTorchHealth);
-        if (percentage > 0.01)
-        {
-            _random = Random.Range(0.0f, 150.0f);
-            var noise = Mathf.PerlinNoise(_random * percentage, Time.time);
-            _component.intensity = Mathf.Lerp(MINIntensity * percentage,
-                MAXIntensity * percentage, noise);
-            fireParticle.transform.transform.localScale = new Vector3(
-                DefaultScale * percentage,
-                DefaultScale * percentage,
-                DefaultScale * percentage);
-        }
-        else
-        {
-            GameManager.Instance.EndGame();
-        }
+        if (Time.time==0) return;
+        _random = Random.Range(0.0f, 150.0f);
+        var noise = Mathf.PerlinNoise(_random * _percentageHealth, Time.time);
+        _component.intensity = Mathf.Lerp(MINIntensity * _percentageHealth,
+            MAXIntensity * _percentageHealth, noise);
+        fireParticle.transform.transform.localScale = new Vector3(
+            DefaultScale * _percentageHealth,
+            DefaultScale * _percentageHealth,
+            DefaultScale * _percentageHealth);
     }
 
 
@@ -48,5 +44,8 @@ public class FireLightScript : Singleton<FireLightScript>
             _torchHealth -= 1 * Time.deltaTime;
         else
             _torchHealth = Mathf.Clamp(_torchHealth += 1 * Time.deltaTime, 0, MaxTorchHealth);
+
+        _percentageHealth = (_torchHealth / MaxTorchHealth);
+        if (_percentageHealth <= 0.01) GameManager.Instance.EndGame(LostTorch);
     }
 }

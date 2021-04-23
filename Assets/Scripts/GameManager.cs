@@ -1,17 +1,45 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
-    void Start()
+    private void Start()
+    {
+        var potentialExits = FindObjectsOfType<PotentialExit>();
+        if (potentialExits.Length < 1) return;
+
+        var random = Random.Range(0, potentialExits.Length);
+        print(potentialExits.Length);
+        potentialExits[random].SetAsExit(true);
+    }
+
+    private void Update()
     {
     }
 
-    void Update()
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+    public void EndGame(EndingStatus status)
     {
-    }
+        switch (status)
+        {
+            case EndingStatus.LostTorch:
+                break;
+            case EndingStatus.WinExit:
+                break;
+            case EndingStatus.LostZombies:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(status), status, null);
+        }
 
-    public void EndGame()
-    {
         Time.timeScale = 0;
+    }
+
+    public enum EndingStatus
+    {
+        LostZombies,
+        LostTorch,
+        WinExit
     }
 }
