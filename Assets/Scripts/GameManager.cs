@@ -5,13 +5,12 @@ using static GameManager.GameState;
 
 public class GameManager : Singleton<GameManager>
 {
-
     private GameState _gameState = Playing;
+
     private void Start()
     {
         var potentialExits = FindObjectsOfType<PotentialExit>();
         if (potentialExits.Length < 1) return;
-
         potentialExits[Random.Range(0, potentialExits.Length)].SetAsExit(true);
     }
 
@@ -43,7 +42,7 @@ public class GameManager : Singleton<GameManager>
     {
         switch (_gameState = gameState)
         {
-            case Won : 
+            case Won:
             case Lost:
                 Time.timeScale = 0;
                 break;
@@ -56,7 +55,9 @@ public class GameManager : Singleton<GameManager>
 
     public enum GameState
     {
-        Won, Lost, Playing
+        Lost,
+        Playing,
+        Won
     }
 
     public enum EndingStatus

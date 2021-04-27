@@ -5,18 +5,21 @@ public class EnemyFollow : MonoBehaviour
 {
     [SerializeField] private int speed = 20;
     private NavMeshAgent _self;
-    [SerializeField] private Transform player;
+    private Transform player;
     
     private void Start()
     {
         _self = GetComponent<NavMeshAgent>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        
         _self.acceleration = speed;
-        _self.SetDestination(player.position);
         _self.autoRepath = true;
+        
     }
 
     private void Update()
     {
+        _self.SetDestination(player.position);
     }
 
     private void FixedUpdate()
