@@ -31,10 +31,7 @@ public class TorchScript : Singleton<TorchScript>
         var noise = Mathf.PerlinNoise(_random * _percentageHealth, Time.time);
         _component.intensity = Mathf.Lerp(MINIntensity * _percentageHealth,
             MAXIntensity * _percentageHealth, noise);
-        fireParticle.transform.transform.localScale = new Vector3(
-            DefaultScale * _percentageHealth,
-            DefaultScale * _percentageHealth,
-            DefaultScale * _percentageHealth);
+        fireParticle.transform.transform.localScale = Vector3.one * (DefaultScale * _percentageHealth);
     }
 
 

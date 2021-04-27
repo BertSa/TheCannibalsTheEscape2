@@ -126,9 +126,7 @@ public class PlayerController : MonoBehaviour
             velocityChange.y = 0;
 
             if (_isWalking && velocityChange.x != 0 || velocityChange.z != 0)
-            {
                 _isSprinting = true;
-            }
 
             _rb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
