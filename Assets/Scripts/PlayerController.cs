@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PlayerController : Singleton<PlayerController>
 {
     private Rigidbody _rb;
-    
+
     [SerializeField] private List<Transform> waypoints;
 
     #region Camera Movement Variables
@@ -59,11 +59,11 @@ public class PlayerController : Singleton<PlayerController>
     {
         base.Awake();
         _rb = GetComponent<Rigidbody>();
-        
+
 
         if (waypoints == null)
             waypoints = new List<Transform>();
-        
+
         playerCamera.fieldOfView = FOV;
     }
 
@@ -96,10 +96,9 @@ public class PlayerController : Singleton<PlayerController>
         #region Jump
 
         if (Input.GetKeyDown(JumpKey) && _isGrounded) Jump();
+        CheckGround();
 
         #endregion
-
-        CheckGround();
     }
 
     private void FixedUpdate()
@@ -150,8 +149,8 @@ public class PlayerController : Singleton<PlayerController>
         var direction = transform.TransformDirection(Vector3.down);
 
         _isGrounded = Physics.Raycast(position, direction, out _, distance);
-        
-        if(_isGrounded)
+
+        if (_isGrounded)
             Debug.DrawRay(position, direction * distance, Color.red);
     }
 
