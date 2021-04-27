@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using static GameManager;
+
 public class EnemyFollow : MonoBehaviour
 {
     [SerializeField] private int speed = 20;
     private NavMeshAgent _self;
     private Transform player;
-    
+
     private void Start()
     {
         _self = GetComponent<NavMeshAgent>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-        
+        player = PlayerController.Instance.GetComponent<Transform>();
+
         _self.acceleration = speed;
         _self.autoRepath = true;
-        
     }
 
     private void Update()
@@ -28,7 +28,7 @@ public class EnemyFollow : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized)
             GameManager.Instance.EndGame(EndingStatus.LostZombies);
     }
 }
