@@ -9,9 +9,7 @@ public class GameManager : Singleton<GameManager>
         var potentialExits = FindObjectsOfType<PotentialExit>();
         if (potentialExits.Length < 1) return;
 
-        var random = Random.Range(0, potentialExits.Length);
-        print(potentialExits.Length);
-        potentialExits[random].SetAsExit(true);
+        potentialExits[Random.Range(0, potentialExits.Length)].SetAsExit(true);
     }
 
     private void Update()

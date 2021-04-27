@@ -1,23 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.PlayerLoop;
-
+using static GameManager;
 public class EnemyFollow : MonoBehaviour
 {
-    private const int Speed = 20;
-    private NavMeshAgent self;
+    [SerializeField] private int speed = 20;
+    private NavMeshAgent _self;
     [SerializeField] private Transform player;
-
-    void Start()
-    {
-        self = GetComponent<NavMeshAgent>();
-        self.acceleration = Speed;
-        self.SetDestination(player.position);
-    }
     
+    private void Start()
+    {
+        _self = GetComponent<NavMeshAgent>();
+        _self.acceleration = speed;
+        _self.SetDestination(player.position);
+        _self.autoRepath = true;
+    }
+
+    private void Update()
+    {
+    }
+
+    private void FixedUpdate()
+    {
+    }
+
     private void OnCollisionEnter(Collision other)
     {
-        //TODO: make collision between cannibal and player lose the game...
+        if(other.gameObject.CompareTag("Player"))
+            GameManager.Instance.EndGame(EndingStatus.LostZombies);
     }
 }

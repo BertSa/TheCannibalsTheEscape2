@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody _rb;
+    
+    [SerializeField] private List<Transform> waypoints;
 
     #region Camera Movement Variables
 
@@ -48,10 +51,10 @@ public class PlayerController : MonoBehaviour
 
     #region Config User
 
-    private float _fov = 60f;
-    private float _mouseSensitivity = 60f;
-    private KeyCode _sprintKey = KeyCode.LeftShift;
-    private KeyCode _jumpKey = KeyCode.Space;
+    private const float FOV = 60f;
+    private const float MouseSensitivity = 60f;
+    private const KeyCode SprintKey = KeyCode.LeftShift;
+    private const KeyCode JumpKey = KeyCode.Space;
 
     #endregion
 
@@ -60,7 +63,10 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _crosshairObject = GetComponentInChildren<Image>();
 
-        playerCamera.fieldOfView = _fov;
+        if (waypoints == null)
+            waypoints = new List<Transform>();
+        
+        playerCamera.fieldOfView = FOV;
     }
 
     private void Start()
@@ -75,8 +81,8 @@ public class PlayerController : MonoBehaviour
     {
         #region Camera
 
-        _yaw += _mouseSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime;
-        _pitch -= _mouseSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime;
+        _yaw += MouseSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime;
+        _pitch -= MouseSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime;
 
         playerCamera.transform.eulerAngles = new Vector3(Mathf.Clamp(_pitch, -MAXLookAngle, MAXLookAngle), _yaw, 0);
         transform.eulerAngles = new Vector3(0, _yaw, 0);
@@ -85,24 +91,16 @@ public class PlayerController : MonoBehaviour
 
         #region Sprint
 
-        if (_isSprinting)
-        {
-            playerCamera.fieldOfView =
-                Mathf.Lerp(playerCamera.fieldOfView, SprintFOV, SprintFOVStepTime * Time.deltaTime);
-        }
-        else
-        {
-            playerCamera.fieldOfView =
-                Mathf.Lerp(playerCamera.fieldOfView, _fov, SprintFOVStepTime * Time.deltaTime);
-        }
-        
+        var fovResult = _isSprinting ? SprintFOV : FOV;
+        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, fovResult, SprintFOVStepTime * Time.deltaTime);
+
         TorchScript.Instance.SetRange(_isSprinting);
 
         #endregion
 
         #region Jump
 
-        if (Input.GetKeyDown(_jumpKey) && _isGrounded) Jump();
+        if (Input.GetKeyDown(JumpKey) && _isGrounded) Jump();
 
         #endregion
 
@@ -117,7 +115,7 @@ public class PlayerController : MonoBehaviour
 
         _isWalking = (targetVelocity.x != 0 || targetVelocity.z != 0 && _isGrounded);
 
-        if (Input.GetKey(_sprintKey))
+        if (Input.GetKey(SprintKey))
         {
             targetVelocity = transform.TransformDirection(targetVelocity) * SprintSpeed;
 
@@ -158,15 +156,10 @@ public class PlayerController : MonoBehaviour
         var position = transform.position;
         var direction = transform.TransformDirection(Vector3.down);
 
-        if (Physics.Raycast(position, direction, out _, distance))
-        {
+        _isGrounded = Physics.Raycast(position, direction, out _, distance);
+        
+        if(_isGrounded)
             Debug.DrawRay(position, direction * distance, Color.red);
-            _isGrounded = true;
-        }
-        else
-        {
-            _isGrounded = false;
-        }
     }
 
     private void Jump()
