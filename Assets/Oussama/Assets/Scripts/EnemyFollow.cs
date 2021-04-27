@@ -19,7 +19,10 @@ public class EnemyFollow : MonoBehaviour
 
     private void Update()
     {
-        _self.SetDestination(player.position);
+        if (_self.isOnNavMesh)
+        {
+            _self.SetDestination(player.position);
+        }
     }
 
     private void FixedUpdate()

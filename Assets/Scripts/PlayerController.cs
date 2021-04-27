@@ -13,10 +13,7 @@ public class PlayerController : Singleton<PlayerController>
     private const float MAXLookAngle = 50f;
 
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private Sprite crosshairImage;
-    [SerializeField] private Color crosshairColor = Color.white;
 
-    private Image _crosshairObject;
     private float _yaw;
     private float _pitch;
 
@@ -62,7 +59,7 @@ public class PlayerController : Singleton<PlayerController>
     {
         base.Awake();
         _rb = GetComponent<Rigidbody>();
-        _crosshairObject = GetComponentInChildren<Image>();
+        
 
         if (waypoints == null)
             waypoints = new List<Transform>();
@@ -73,9 +70,6 @@ public class PlayerController : Singleton<PlayerController>
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-
-        _crosshairObject.sprite = crosshairImage;
-        _crosshairObject.color = crosshairColor;
     }
 
     private void Update()
