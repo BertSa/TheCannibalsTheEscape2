@@ -6,8 +6,6 @@ public class PlayerController : Singleton<PlayerController>
 {
     private Rigidbody _rb;
 
-    [SerializeField] private List<Transform> waypoints;
-
     #region Camera Movement Variables
 
     private const float MAXLookAngle = 50f;
@@ -59,10 +57,6 @@ public class PlayerController : Singleton<PlayerController>
     {
         base.Awake();
         _rb = GetComponent<Rigidbody>();
-
-
-        if (waypoints == null)
-            waypoints = new List<Transform>();
 
         playerCamera.fieldOfView = FOV;
     }
