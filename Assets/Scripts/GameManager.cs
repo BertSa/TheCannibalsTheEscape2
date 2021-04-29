@@ -13,11 +13,7 @@ public class GameManager : Singleton<GameManager>
         if (potentialExits.Length < 1) return;
         potentialExits[Random.Range(0, potentialExits.Length)].SetAsExit(true);
     }
-
-    private void Update()
-    {
-    }
-
+    
     // ReSharper disable once MemberCanBeMadeStatic.Global
     public void EndGame(EndingStatus status)
     {
@@ -38,11 +34,13 @@ public class GameManager : Singleton<GameManager>
     }
 
 
-    public void SetGameState(GameState gameState)
+    private void SetGameState(GameState gameState)
     {
         switch (_gameState = gameState)
         {
             case Won:
+                Time.timeScale = 0;
+                break;
             case Lost:
                 Time.timeScale = 0;
                 break;

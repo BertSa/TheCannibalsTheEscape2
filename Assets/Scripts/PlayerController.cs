@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayerController : Singleton<PlayerController>
 {
