@@ -13,15 +13,8 @@ public class GameManager : Singleton<GameManager>
         if (potentialExits.Length < 1) return;
         potentialExits[Random.Range(0, potentialExits.Length)].SetAsExit(true);
     }
-
-    private void Update()
-    {
-        if ((Input.GetKey(KeyCode.Escape)))
-        {
-            
-        }
-    }
-
+    
+    // ReSharper disable once MemberCanBeMadeStatic.Global
     public void EndGame(EndingStatus status)
     {
         switch (status)
@@ -50,7 +43,6 @@ public class GameManager : Singleton<GameManager>
                 break;
             case Lost:
                 Time.timeScale = 0;
-                if (SoundManager.IsInitialized) SoundManager.Instance.EndGame();
                 break;
             case Playing:
                 break;

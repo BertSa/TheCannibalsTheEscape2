@@ -20,6 +20,6 @@ public class PotentialExit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (GameManager.IsInitialized) GameManager.Instance.EndGame(WinExit);
+        GameManager.Instance.EndGame(WinExit);
     }
 }
