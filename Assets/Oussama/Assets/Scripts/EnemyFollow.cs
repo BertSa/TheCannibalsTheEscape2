@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using static GameManager;
 
@@ -8,9 +7,9 @@ public class EnemyFollow : MonoBehaviour
     [SerializeField] private int speed = 5;
     private NavMeshAgent _agent;
     private Transform _player;
+
     private Animator _animator;
     private readonly int _attack = Animator.StringToHash("Attack");
-    private const int DistanceToAttack = 2;
 
     private void Start()
     {
@@ -30,7 +29,12 @@ public class EnemyFollow : MonoBehaviour
             _agent.ResetPath();
             _agent.SetDestination(_player.position);
         }
-        _animator.SetBool(_attack, Vector3.Distance(transform.position, _player.position) <= DistanceToAttack);
+
+        _animator.SetBool(_attack, _agent.remainingDistance < 10);
+    }
+
+    private void FixedUpdate()
+    {
     }
 
     private void OnCollisionEnter(Collision other)
