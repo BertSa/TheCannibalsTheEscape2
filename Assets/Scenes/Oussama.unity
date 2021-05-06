@@ -363,6 +363,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Map
       objectReference: {fileID: 0}
+    - target: {fileID: 3175673447276814344, guid: 5067b9740d98d22e686c336c93fcb02e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175673447276814344, guid: 5067b9740d98d22e686c336c93fcb02e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175673447276814344, guid: 5067b9740d98d22e686c336c93fcb02e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6510619583872197061, guid: 5067b9740d98d22e686c336c93fcb02e,
         type: 3}
       propertyPath: m_RootOrder

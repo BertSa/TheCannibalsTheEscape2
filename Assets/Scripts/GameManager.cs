@@ -1,11 +1,12 @@
 ﻿using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using static GameManager.GameState;
+using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
     private GameState _gameState = Playing;
+    public EventGameState onGameStateChanged;
 
     private void Start()
     {
@@ -18,58 +19,40 @@ public class GameManager : Singleton<GameManager>
     {
         if ((Input.GetKey(KeyCode.Escape)))
         {
-            
         }
     }
 
-    public void EndGame(EndingStatus status)
+    public void EndGame(GameState gameState)
     {
-        switch (status)
-        {
-            case EndingStatus.LostTorch:
-                SetGameState(Lost);
-                break;
-            case EndingStatus.WinExit:
-                SetGameState(Won);
-                break;
-            case EndingStatus.LostZombies:
-                SetGameState(Lost);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(status), status, null);
-        }
-    }
-
-
-    private void SetGameState(GameState gameState)
-    {
+        var oldGameState = _gameState;
         switch (_gameState = gameState)
         {
+            case Playing:
+                Time.timeScale = 0;
+                break;
             case Won:
                 Time.timeScale = 0;
                 break;
-            case Lost:
+            case LostTorch:
                 Time.timeScale = 0;
                 if (SoundManager.IsInitialized) SoundManager.Instance.EndGame();
                 break;
-            case Playing:
+            case LostCannibals:
+                Time.timeScale = 0;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(gameState), gameState, null);
         }
+
+        onGameStateChanged.Invoke(oldGameState, _gameState);
     }
+
 
     public enum GameState
     {
-        Lost,
         Playing,
-        Won
-    }
-
-    public enum EndingStatus
-    {
-        LostZombies,
+        LostCannibals,
         LostTorch,
-        WinExit
+        Won
     }
 }

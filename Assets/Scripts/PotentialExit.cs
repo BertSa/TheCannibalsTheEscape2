@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using static GameManager.EndingStatus;
 
 public class PotentialExit : MonoBehaviour
 {
@@ -20,6 +19,6 @@ public class PotentialExit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (GameManager.IsInitialized) GameManager.Instance.EndGame(WinExit);
+        if (GameManager.IsInitialized) GameManager.Instance.EndGame(GameManager.GameState.Won);
     }
 }

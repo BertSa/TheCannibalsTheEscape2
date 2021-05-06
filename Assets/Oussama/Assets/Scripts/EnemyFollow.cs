@@ -32,12 +32,13 @@ public class EnemyFollow : MonoBehaviour
             _agent.ResetPath();
             _agent.SetDestination(_player.position);
         }
+
         _animator.SetBool(_attack, Vector3.Distance(transform.position, _player.position) <= DistanceToAttack);
     }
 
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized)
-            GameManager.Instance.EndGame(EndingStatus.LostZombies);
+            GameManager.Instance.EndGame(GameState.LostCannibals);
     }
 }
