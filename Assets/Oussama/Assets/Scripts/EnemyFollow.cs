@@ -4,12 +4,13 @@ using static GameManager;
 
 public class EnemyFollow : MonoBehaviour
 {
-    [SerializeField] private int speed = 5;
+    private const int Acceleration = 1;
+    [SerializeField] private int _speed = 5;
     private NavMeshAgent _agent;
     private Transform _player;
-
     private Animator _animator;
     private readonly int _attack = Animator.StringToHash("Attack");
+    private const int DistanceToAttack = 2;
 
     private void Start()
     {
@@ -18,8 +19,10 @@ public class EnemyFollow : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         _player = PlayerController.Instance.GetComponent<Transform>();
 
-        _agent.acceleration = speed;
+        _agent.acceleration = Acceleration;
+        _agent.speed = _speed;
         _agent.autoRepath = true;
+        _agent.obstacleAvoidanceType = ObstacleAvoidanceType.MedQualityObstacleAvoidance;
     }
 
     private void Update()
@@ -29,12 +32,7 @@ public class EnemyFollow : MonoBehaviour
             _agent.ResetPath();
             _agent.SetDestination(_player.position);
         }
-
-        _animator.SetBool(_attack, _agent.remainingDistance < 10);
-    }
-
-    private void FixedUpdate()
-    {
+        _animator.SetBool(_attack, Vector3.Distance(transform.position, _player.position) <= DistanceToAttack);
     }
 
     private void OnCollisionEnter(Collision other)
