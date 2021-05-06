@@ -10,7 +10,7 @@ public class EnemyFollow : MonoBehaviour
     private Transform _player;
     private Animator _animator;
     private readonly int _attack = Animator.StringToHash("Attack");
-    private const int DistanceToAttack = 6;
+    private const int DistanceToAttack = 2;
 
     private void Start()
     {
@@ -30,7 +30,6 @@ public class EnemyFollow : MonoBehaviour
             _agent.ResetPath();
             _agent.SetDestination(_player.position);
         }
-
         _animator.SetBool(_attack, Vector3.Distance(transform.position, _player.position) <= DistanceToAttack);
     }
 
