@@ -5,7 +5,7 @@ using static GameManager;
 public class EnemyFollow : MonoBehaviour
 {
     private const int Acceleration = 1;
-    [SerializeField] private int _speed = 5;
+    [SerializeField] private int speed = 5;
     private NavMeshAgent _agent;
     private Transform _player;
     private Animator _animator;
@@ -20,7 +20,7 @@ public class EnemyFollow : MonoBehaviour
         _player = PlayerController.Instance.GetComponent<Transform>();
 
         _agent.acceleration = Acceleration;
-        _agent.speed = _speed;
+        _agent.speed = speed;
         _agent.autoRepath = true;
         _agent.obstacleAvoidanceType = ObstacleAvoidanceType.MedQualityObstacleAvoidance;
     }
