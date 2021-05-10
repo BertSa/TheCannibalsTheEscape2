@@ -1,25 +1,24 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class MoveImage : MonoBehaviour
 {
-    private RawImage m_img;
-    private float mFadeDuration = 3000.0f;
+    private const float MFadeDuration = 3000.0f;
+    private RawImage _mImg;
 
-    [SerializeField] private bool m_ignoreTimeScale=true;
+    [SerializeField] private bool mIgnoreTimeScale = true;
 
     private void Start()
     {
-        m_img = GetComponent<RawImage>();
+        _mImg = GetComponent<RawImage>();
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
-            m_img.CrossFadeAlpha(0f, mFadeDuration, m_ignoreTimeScale);
+            _mImg.CrossFadeAlpha(0f, MFadeDuration, mIgnoreTimeScale);
         if (Input.GetMouseButtonDown(1))
-            m_img.CrossFadeAlpha(1f, mFadeDuration, m_ignoreTimeScale);
+            _mImg.CrossFadeAlpha(1f, MFadeDuration, mIgnoreTimeScale);
         transform.position += new Vector3(-0.2f, -0.01f);
     }
 }

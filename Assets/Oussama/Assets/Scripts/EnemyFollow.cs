@@ -39,6 +39,6 @@ public class EnemyFollow : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized)
-            GameManager.Instance.EndGame(GameState.LostCannibals);
+            GameManager.Instance.SetGameState(GameState.LostCannibals);
     }
 }

@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using static System.Single;
+using static GameManager.GameState;
 using Random = UnityEngine.Random;
 
 public class SoundManager : Singleton<SoundManager>
@@ -9,6 +12,7 @@ public class SoundManager : Singleton<SoundManager>
     private AudioSource _audioSource;
     [Header("Clips")] [SerializeField] private AudioClip ending;
     [SerializeField] private List<AudioClip> ambiances;
+    [SerializeField] private List<AudioClip> alone;
 
     private Transform _player;
 
@@ -22,13 +26,39 @@ public class SoundManager : Singleton<SoundManager>
     {
         if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
         var pos = RandomCircle(_player.position, 6.0f);
-        AudioSource.PlayClipAtPoint(ambiances[Random.Range(0, ambiances.Count)], pos,MaxValue);
+        AudioSource.PlayClipAtPoint(ambiances[Random.Range(0, ambiances.Count)], pos, MaxValue);
+        GameManager.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
+        GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
+    }
+
+    private void HandleGameStateChanged(GameManager.GameState previous, GameManager.GameState actual)
+    {
+        switch (actual)
+        {
+            case Playing:
+                break;
+            case Won:
+            case LostCannibals:
+            case LostTorch:
+                EndGame();
+                break;
+            case Pause:
+                PauseGame();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
+        }
+    }
+
+    private void HandleAmbianceChanged(Ambiances previous, Ambiances actual)
+    {
+        
     }
 
 
     // ReSharper disable once MemberCanBePrivate.Global
     // ReSharper disable Unity.PerformanceAnalysis
-    public void PauseGame()
+    private void PauseGame()
     {
         findObjectsOfType = FindObjectsOfType<AudioSource>();
         foreach (var audioSource in findObjectsOfType)
@@ -43,15 +73,26 @@ public class SoundManager : Singleton<SoundManager>
         _audioSource.clip = ending;
         _audioSource.Play();
     }
-    
+
     private static Vector3 RandomCircle(Vector3 center, float radius)
     {
         const float minDistance = 3f;
         var ang = Random.value * 360;
         Vector3 pos;
-        pos.x = center.x + minDistance +(radius * Mathf.Sin(ang * Mathf.Deg2Rad));
+        pos.x = center.x + minDistance + (radius * Mathf.Sin(ang * Mathf.Deg2Rad));
         pos.y = center.y + Random.Range(0, 7);
         pos.z = center.z + minDistance + (radius * Mathf.Cos(ang * Mathf.Deg2Rad));
         return pos;
+    }
+
+    public enum Ambiances
+    {
+        Alone,
+        Followed
+    }
+
+    [Serializable]
+    public class EventAmbiance : UnityEvent<Ambiances, Ambiances>
+    {
     }
 }

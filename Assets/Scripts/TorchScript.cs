@@ -42,6 +42,6 @@ public class TorchScript : Singleton<TorchScript>
             _torchHealth = Mathf.Clamp(_torchHealth += 1 * Time.deltaTime, 0, MaxTorchHealth);
 
         _percentageHealth = (_torchHealth / MaxTorchHealth);
-        if (_percentageHealth <= 0.01 && GameManager.IsInitialized) GameManager.Instance.EndGame(GameManager.GameState.Won);
+        if (_percentageHealth <= 0.01 && GameManager.IsInitialized) GameManager.Instance.SetGameState(GameManager.GameState.Won);
     }
 }

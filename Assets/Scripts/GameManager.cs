@@ -1,12 +1,16 @@
 ﻿using System;
 using UnityEngine;
 using static GameManager.GameState;
+using static SoundManager;
+using static SoundManager.Ambiances;
 using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
     private GameState _gameState = Playing;
+    private Ambiances ambiance = Followed;
     public EventGameState onGameStateChanged;
+    public EventAmbiance onAmbianceChanged;
 
     private void Start()
     {
@@ -22,14 +26,19 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void EndGame(GameState gameState)
+
+    public void SetAmbiance(Ambiances actual)
+    {
+        var previous = ambiance;
+        ambiance = actual;
+        onAmbianceChanged.Invoke(previous, actual);
+    }
+
+    public void SetGameState(GameState gameState)
     {
         var oldGameState = _gameState;
         switch (_gameState = gameState)
         {
-            case Playing:
-                Time.timeScale = 0;
-                break;
             case Won:
                 Time.timeScale = 0;
                 break;
@@ -38,6 +47,12 @@ public class GameManager : Singleton<GameManager>
                 if (SoundManager.IsInitialized) SoundManager.Instance.EndGame();
                 break;
             case LostCannibals:
+                Time.timeScale = 0;
+                break;
+            case Playing:
+                Time.timeScale = 1;
+                break;
+            case Pause:
                 Time.timeScale = 0;
                 break;
             default:
@@ -53,6 +68,7 @@ public class GameManager : Singleton<GameManager>
         Playing,
         LostCannibals,
         LostTorch,
-        Won
+        Won,
+        Pause
     }
 }

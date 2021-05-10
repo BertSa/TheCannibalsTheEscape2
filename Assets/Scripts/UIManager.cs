@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using static GameManager.GameState;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,16 +17,16 @@ public class UIManager : MonoBehaviour
     {
         switch (actual)
         {
-            case GameManager.GameState.Playing:
+            case Playing:
                 hud.SetActive(true);
                 break;
-            case GameManager.GameState.Won:
+            case Won:
                 cinematic.SetActive(false);
                 break;
-            case GameManager.GameState.LostCannibals:
+            case LostCannibals:
                 cinematic.SetActive(false);
                 break;
-            case GameManager.GameState.LostTorch:
+            case LostTorch:
                 cinematic.SetActive(false);
                 break;
             default:
