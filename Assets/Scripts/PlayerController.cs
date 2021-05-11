@@ -17,14 +17,14 @@ public class PlayerController : Singleton<PlayerController>
 
     #region Movement Variables
 
-    private const float WalkSpeed = 5f;
-    private const float MAXVelocityChange = 10f;
+    private const float WalkSpeed = 400f;
+    private const float MAXVelocityChange = 500f;
 
     private bool _isWalking;
 
     #region Sprint
 
-    private const float SprintSpeed = 7f;
+    private const float SprintSpeed = 500f;
     private const float SprintFOV = 80f;
     private const float SprintFOVStepTime = 10f;
 
@@ -98,12 +98,12 @@ public class PlayerController : Singleton<PlayerController>
         #region Movement
 
         var targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-
+        print(targetVelocity.z);
         _isWalking = (targetVelocity.x != 0 || targetVelocity.z != 0 && _isGrounded);
 
-        if (Input.GetKey(SprintKey))
+        if (targetVelocity.z > 0  && Input.GetKey(SprintKey))
         {
-            targetVelocity = transform.TransformDirection(targetVelocity) * SprintSpeed;
+            targetVelocity = transform.TransformDirection(targetVelocity) * (SprintSpeed * Time.deltaTime);
 
             var velocity = _rb.velocity;
             var velocityChange = (targetVelocity - velocity);
@@ -120,7 +120,7 @@ public class PlayerController : Singleton<PlayerController>
         {
             _isSprinting = false;
 
-            targetVelocity = transform.TransformDirection(targetVelocity) * WalkSpeed;
+            targetVelocity = transform.TransformDirection(targetVelocity) * (WalkSpeed * Time.deltaTime);
 
             var velocity = _rb.velocity;
             var velocityChange = (targetVelocity - velocity);

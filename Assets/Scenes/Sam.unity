@@ -238,10 +238,6 @@ MonoBehaviour:
   onAmbianceChanged:
     m_PersistentCalls:
       m_Calls: []
-  attack: []
-  follow:
-  - {fileID: 8300000, guid: be4e0dcbc604799c38b7252e7bd26670, type: 3}
-  searching: []
 --- !u!4 &1355458558 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5107502605514061843, guid: 3326802b318608b4e85a0202cd03fe83,
