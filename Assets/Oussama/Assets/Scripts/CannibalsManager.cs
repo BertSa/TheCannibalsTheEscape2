@@ -71,10 +71,10 @@ public class CannibalsManager : Singleton<CannibalsManager>
             case Following:
                 foreach (var canibal in canibals)
                 {
-                    var audioSource = canibal.gameObject.AddComponent<AudioSource>();
-                    audioSource.clip = follow[0];
-                    audioSource.loop = true;
-                    audioSource.Play();
+                    // var audioSource = canibal.gameObject.AddComponent<AudioSource>();
+                    // audioSource.clip = follow[0];
+                    // audioSource.loop = true;
+                    // audioSource.Play();
                 }
 
                 break;
