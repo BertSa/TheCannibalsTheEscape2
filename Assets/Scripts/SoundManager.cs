@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using static System.Single;
+using static CannibalsManager;
+using static CannibalsManager.CannibalsState;
 using static GameManager.GameState;
 using Random = UnityEngine.Random;
 
@@ -15,6 +17,7 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private List<AudioClip> alone;
 
     private Transform _player;
+    [SerializeField] private AudioClip running;
 
     protected override void Awake()
     {
@@ -27,7 +30,7 @@ public class SoundManager : Singleton<SoundManager>
         if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
         var pos = RandomCircle(_player.position, 6.0f);
         AudioSource.PlayClipAtPoint(ambiances[Random.Range(0, ambiances.Count)], pos, MaxValue);
-        GameManager.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
+        Singleton<CannibalsManager>.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
         GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
@@ -50,9 +53,28 @@ public class SoundManager : Singleton<SoundManager>
         }
     }
 
-    private void HandleAmbianceChanged(Ambiances previous, Ambiances actual)
+    private void HandleAmbianceChanged(CannibalsState previous, CannibalsState actual)
     {
-        
+        if (previous == Searching && actual == Following)
+        {
+            _audioSource.clip = running;
+            _audioSource.Play();
+        }
+        else if (actual == Searching)
+        {
+        }
+        else if (actual == Attacking)
+        {
+            
+        }
+        else if (actual== Following)
+        {
+            
+        }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
+        }
     }
 
 
@@ -85,14 +107,8 @@ public class SoundManager : Singleton<SoundManager>
         return pos;
     }
 
-    public enum Ambiances
-    {
-        Alone,
-        Followed
-    }
-
     [Serializable]
-    public class EventAmbiance : UnityEvent<Ambiances, Ambiances>
+    public class EventAmbiance : UnityEvent<CannibalsState, CannibalsState>
     {
     }
 }

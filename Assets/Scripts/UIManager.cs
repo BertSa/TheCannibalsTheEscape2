@@ -3,14 +3,14 @@ using UnityEngine;
 using UnityEngine.Events;
 using static GameManager.GameState;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
     [SerializeField] private GameObject cinematic;
     [SerializeField] private GameObject hud;
 
     private void Start()
     {
-        GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
+        if (GameManager.IsInitialized) GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
     private void HandleGameStateChanged(GameManager.GameState previous, GameManager.GameState actual)

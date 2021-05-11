@@ -1,16 +1,15 @@
 ﻿using System;
 using UnityEngine;
+using static CannibalsManager.CannibalsState;
 using static GameManager.GameState;
-using static SoundManager;
-using static SoundManager.Ambiances;
 using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
     private GameState _gameState = Playing;
-    private Ambiances ambiance = Followed;
-    public EventGameState onGameStateChanged;
-    public EventAmbiance onAmbianceChanged;
+    [HideInInspector] public EventGameState onGameStateChanged;
+    private bool ddd = false;
+
 
     private void Start()
     {
@@ -23,15 +22,20 @@ public class GameManager : Singleton<GameManager>
     {
         if ((Input.GetKey(KeyCode.Escape)))
         {
+            if (CannibalsManager.IsInitialized)
+            {
+                if (ddd)
+                {
+                    CannibalsManager.Instance.SetState(Searching);
+                }
+                else
+                {
+                    CannibalsManager.Instance.SetState(Following);
+                }
+
+                ddd = !ddd;
+            }
         }
-    }
-
-
-    public void SetAmbiance(Ambiances actual)
-    {
-        var previous = ambiance;
-        ambiance = actual;
-        onAmbianceChanged.Invoke(previous, actual);
     }
 
     public void SetGameState(GameState gameState)
