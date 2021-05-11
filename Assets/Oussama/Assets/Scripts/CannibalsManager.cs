@@ -45,17 +45,16 @@ public class CannibalsManager : Singleton<CannibalsManager>
             
             if(lookingAtPlayer)
             {
-                currentCannibalsState = Following;
+                SetState(Following);
                 return;
             }
             
             if (c.IsNearPlayer(1, EnemyFollow.DistanceToAttack))
             {
-                currentCannibalsState = Attacking;
+                SetState(Attacking);
                 return;
             }
-            
-            currentCannibalsState = Searching;
+            SetState(Searching);
             return;
         }
     }
@@ -85,6 +84,7 @@ public class CannibalsManager : Singleton<CannibalsManager>
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
         }
+        currentCannibalsState = actual;
     }
 
 
