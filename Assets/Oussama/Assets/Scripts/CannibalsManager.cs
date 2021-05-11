@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using UnityEngine;
 using static CannibalsManager.CannibalsState;
 using static SoundManager;
 
 public class CannibalsManager : Singleton<CannibalsManager>
 {
+
     private EnemyFollow[] canibals;
     [SerializeField] private CannibalsState state = Following;
     [HideInInspector] public EventAmbiance onAmbianceChanged;
@@ -14,6 +15,8 @@ public class CannibalsManager : Singleton<CannibalsManager>
     [SerializeField] private AudioClip[] follow;
     [SerializeField] private AudioClip[] searching;
 
+    private Transform player;
+    private CannibalsState currentCannibalsState;
     
     protected override void Awake()
     {
@@ -24,12 +27,37 @@ public class CannibalsManager : Singleton<CannibalsManager>
     void Start()
     {
         canibals = FindObjectsOfType<EnemyFollow>();
+        player = PlayerController.Instance.GetComponent<Transform>();
+        currentCannibalsState = Following;
         SetState(Following);
     }
 
     // Update is called once per frame
     void Update()
     {
+        foreach (var c in canibals)
+        {
+            var cannibalPosition = c.transform;
+            Vector3 dirFromAtoB = (player.transform.position - cannibalPosition.position).normalized;
+            float dotProd = Vector3.Dot(dirFromAtoB, cannibalPosition.forward);
+
+            var lookingAtPlayer = dotProd >= 0 && dotProd <= 1;
+            
+            if(lookingAtPlayer)
+            {
+                currentCannibalsState = Following;
+                return;
+            }
+            
+            if (c.IsNearPlayer(1, EnemyFollow.DistanceToAttack))
+            {
+                currentCannibalsState = Attacking;
+                return;
+            }
+            
+            currentCannibalsState = Searching;
+            return;
+        }
     }
 
 
