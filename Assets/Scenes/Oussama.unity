@@ -227,30 +227,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1340704146, guid: ce84b0d7fc0af58ff884fbd3c9049c4d, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1340704146, guid: ce84b0d7fc0af58ff884fbd3c9049c4d, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1340704146, guid: ce84b0d7fc0af58ff884fbd3c9049c4d, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1340704146, guid: ce84b0d7fc0af58ff884fbd3c9049c4d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1340704147, guid: ce84b0d7fc0af58ff884fbd3c9049c4d, type: 3}
-      propertyPath: m_Height
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1340704147, guid: ce84b0d7fc0af58ff884fbd3c9049c4d, type: 3}
-      propertyPath: m_Radius
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 3695870476628269810, guid: ce84b0d7fc0af58ff884fbd3c9049c4d,
         type: 3}
       propertyPath: m_RootOrder
@@ -518,36 +494,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 260023786944154524, guid: 3326802b318608b4e85a0202cd03fe83,
-        type: 3}
-      propertyPath: m_Speed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 260023786944154524, guid: 3326802b318608b4e85a0202cd03fe83,
-        type: 3}
-      propertyPath: m_Height
-      value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 260023786944154524, guid: 3326802b318608b4e85a0202cd03fe83,
-        type: 3}
-      propertyPath: m_WalkableMask
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 260023786944154524, guid: 3326802b318608b4e85a0202cd03fe83,
-        type: 3}
-      propertyPath: m_StoppingDistance
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 260023786944154524, guid: 3326802b318608b4e85a0202cd03fe83,
-        type: 3}
-      propertyPath: m_ObstacleAvoidanceType
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 260023786944154524, guid: 3326802b318608b4e85a0202cd03fe83,
-        type: 3}
-      propertyPath: m_AutoTraverseOffMeshLink
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5107502605514061843, guid: 3326802b318608b4e85a0202cd03fe83,
         type: 3}
       propertyPath: m_RootOrder
@@ -720,26 +666,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Map
-      objectReference: {fileID: 0}
-    - target: {fileID: 3175673447276814344, guid: 5067b9740d98d22e686c336c93fcb02e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3175673447276814344, guid: 5067b9740d98d22e686c336c93fcb02e,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3175673447276814344, guid: 5067b9740d98d22e686c336c93fcb02e,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3175682858739083068, guid: 5067b9740d98d22e686c336c93fcb02e,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -44.82
       objectReference: {fileID: 0}
     - target: {fileID: 6510619583872197061, guid: 5067b9740d98d22e686c336c93fcb02e,
         type: 3}

@@ -2645,6 +2645,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  attack:
+  - {fileID: 8300000, guid: dba8e47aaf0ff6dd29c9319a62827805, type: 3}
+  - {fileID: 8300000, guid: e3495841b971fafb88fccdaa607263ba, type: 3}
+  follow:
+  - {fileID: 8300000, guid: 2d5e937d1f66c4785b18bececf86034f, type: 3}
+  - {fileID: 8300000, guid: 9eb5f438a53850124aa71c41286ae6d7, type: 3}
+  - {fileID: 8300000, guid: 5da27048c567519808d2a1697f3d84e9, type: 3}
+  searching:
+  - {fileID: 8300000, guid: b348a28784bfe0db293c71ab43439f54, type: 3}
+  - {fileID: 8300000, guid: 96314a327d621210e997416408dcb1e9, type: 3}
+  - {fileID: 8300000, guid: 17ab72d9c9028359ca167007125d0303, type: 3}
 --- !u!195 &260023786944154524
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2655,17 +2666,17 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.4
-  m_Speed: 5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2
+  m_Height: 1.4
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 5
   m_ObstacleAvoidanceType: 4
 --- !u!136 &6492309422489329396
 CapsuleCollider:

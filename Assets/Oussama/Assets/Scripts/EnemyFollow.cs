@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using static GameManager;
@@ -28,7 +29,7 @@ public class EnemyFollow : MonoBehaviour
 
     private const int VolumeChangesPerSecond = 15;
     private const float FadeDuration = 1.0f;
-    private const float Volume = 1.0f;
+    private const float Volume = 0.5f;
     private AudioSource[] _clipPlaying;
 
     #endregion
@@ -46,6 +47,7 @@ public class EnemyFollow : MonoBehaviour
             s.loop = true;
             s.playOnAwake = false;
             s.volume = 0.0f;
+            s.spatialBlend = 1;
         }
     }
 
@@ -59,8 +61,6 @@ public class EnemyFollow : MonoBehaviour
         _agent.acceleration = Acceleration;
         _agent.speed = speed;
         _agent.autoRepath = true;
-        _agent.obstacleAvoidanceType = ObstacleAvoidanceType.MedQualityObstacleAvoidance;
-
         Play(follow);
     }
 
@@ -68,19 +68,15 @@ public class EnemyFollow : MonoBehaviour
     {
         var playerPosition = _player.position;
 
-        if (IsNearPlayer(1.4f, DistanceToAttack))
-        {
-            transform.LookAt(playerPosition);
-        }
-
         _agent.SetDestination(playerPosition);
+        
         var isNearPlayer = IsNearPlayer(2, DistanceToAttack);
+        
         Play(isNearPlayer ? attack : follow);
+        
         _animator.SetBool(_attack, isNearPlayer);
         
         transform.rotation = Quaternion.LookRotation(playerPosition - transform.position);
-
-        _animator.SetBool(_attack, IsNearPlayer(1, DistanceToAttack));
     }
 
     private void OnCollisionEnter(Collision other)
@@ -101,10 +97,6 @@ public class EnemyFollow : MonoBehaviour
         const int maxColliders = 10;
         Collider[] hitColliders = new Collider[maxColliders];
         var numColliders = Physics.OverlapSphereNonAlloc(transform.position, 50, hitColliders);
-        for (var i = 0; i < numColliders; i++)
-        {
-            hitColliders[i].SendMessage(nameof(IsNearPlayer));
-        }
         return false;
     }
     
