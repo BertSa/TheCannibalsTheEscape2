@@ -45,7 +45,12 @@ public class EnemyFollow : MonoBehaviour
             GameManager.Instance.SetGameState(GameState.LostCannibals);
     }
 
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+    }
+
+
     public bool IsNearPlayer(float rateDistance, int distance)
     {
         if (rateDistance <= 0)
