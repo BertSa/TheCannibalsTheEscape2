@@ -25,16 +25,15 @@ public class EnemyFollow : MonoBehaviour
         _agent.acceleration = Acceleration;
         _agent.speed = speed;
         _agent.autoRepath = true;
-        _agent.obstacleAvoidanceType = ObstacleAvoidanceType.MedQualityObstacleAvoidance;
     }
 
     private void Update()
     {
         var playerPosition = _player.position;
 
-        if (IsNearPlayer(1.4f, DistanceToAttack)) transform.LookAt(playerPosition);
-
         _agent.SetDestination(playerPosition);
+        
+        transform.rotation = Quaternion.LookRotation(playerPosition - transform.position);
 
         _animator.SetBool(_attack, IsNearPlayer(1, DistanceToAttack));
     }
@@ -45,9 +44,38 @@ public class EnemyFollow : MonoBehaviour
             GameManager.Instance.SetGameState(GameState.LostCannibals);
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag("areaPlayer"))
+        {
+        }
+    }
+
+    private bool IsPlayerInArea()
+    {
+        const int maxColliders = 10;
+        Collider[] hitColliders = new Collider[maxColliders];
+        var numColliders = Physics.OverlapSphereNonAlloc(transform.position, 50, hitColliders);
+        for (var i = 0; i < numColliders; i++)
+        {
+            hitColliders[i].SendMessage(nameof(IsNearPlayer));
+        }
+        return false;
+    }
+    
+    public void MoveToward( Vector3 targetPoint)
+    {
+        Quaternion rotation = Quaternion.LookRotation(targetPoint - transform.position);
+        rotation.x = 0f;
+        rotation.z = 0f;
+        
+        Transform transform1 = transform;
+        
+        transform1.rotation = Quaternion.Slerp(transform1.rotation, rotation, Time.deltaTime * _agent.angularSpeed);
+ 
+        Vector3 movementVelocity = transform1.forward * speed;
+ 
+        movementVelocity.y = -.08f;
     }
 
 

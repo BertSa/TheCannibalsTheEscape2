@@ -2559,6 +2559,7 @@ GameObject:
   - component: {fileID: 260023786944154526}
   - component: {fileID: 260023786944154525}
   - component: {fileID: 260023786944154524}
+  - component: {fileID: 6492309422489329396}
   m_Layer: 0
   m_Name: Cannibal
   m_TagString: Zombie
@@ -2643,7 +2644,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8e65049b0d23fc4d8f5d482131c0406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
+  speed: 5
 --- !u!195 &260023786944154524
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2666,6 +2667,20 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!136 &6492309422489329396
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8122848136635533824}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.45
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!1 &8252319534875707154
 GameObject:
   m_ObjectHideFlags: 0

@@ -44,11 +44,7 @@ public class CannibalsManager : Singleton<CannibalsManager>
                 SetState(Following);
                 return;
             }
-            if (c.IsNearPlayer(1, EnemyFollow.DistanceToAttack))
-            {
-                SetState(Attacking);
-                return;
-            }
+          
             SetState(Searching);
             return;
         }
@@ -66,8 +62,14 @@ public class CannibalsManager : Singleton<CannibalsManager>
 
     public enum CannibalsState
     {
+        /// <summary>
+        /// when cannibals are following the player
+        /// </summary>
         Following,
+        
+        /// <summary>
+        /// when cannibals are searching the player
+        /// </summary>
         Searching,
-        Attacking
     }
 }

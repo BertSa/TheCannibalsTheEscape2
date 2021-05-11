@@ -63,10 +63,6 @@ public class SoundManager : Singleton<SoundManager>
         else if (actual == Searching)
         {
         }
-        else if (actual == Attacking)
-        {
-            
-        }
         else if (actual== Following)
         {
             
@@ -100,10 +96,10 @@ public class SoundManager : Singleton<SoundManager>
     {
         const float minDistance = 3f;
         var ang = Random.value * 360;
-        Vector3 pos;
-        pos.x = center.x + minDistance + (radius * Mathf.Sin(ang * Mathf.Deg2Rad));
-        pos.y = center.y + Random.Range(0, 7);
-        pos.z = center.z + minDistance + (radius * Mathf.Cos(ang * Mathf.Deg2Rad));
+        var pos = center;
+        pos.x += minDistance + (radius * Mathf.Sin(ang * Mathf.Deg2Rad));
+        pos.y += Random.Range(0, 7);
+        pos.z += minDistance + (radius * Mathf.Cos(ang * Mathf.Deg2Rad));
         return pos;
     }
 

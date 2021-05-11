@@ -12,7 +12,7 @@ public class AreaStrategy : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Zombie"))
+        if (other.gameObject.CompareTag("Zombie") && CannibalsManager.IsInitialized)
             CannibalsManager.Instance.SetState(CannibalsManager.CannibalsState.Following);
     }
 }
