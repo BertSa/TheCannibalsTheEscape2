@@ -2643,7 +2643,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8e65049b0d23fc4d8f5d482131c0406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
+  speed: 5
+  attack:
+  - {fileID: 8300000, guid: dba8e47aaf0ff6dd29c9319a62827805, type: 3}
+  - {fileID: 8300000, guid: e3495841b971fafb88fccdaa607263ba, type: 3}
+  follow:
+  - {fileID: 8300000, guid: 2d5e937d1f66c4785b18bececf86034f, type: 3}
+  - {fileID: 8300000, guid: 9eb5f438a53850124aa71c41286ae6d7, type: 3}
+  - {fileID: 8300000, guid: 5da27048c567519808d2a1697f3d84e9, type: 3}
+  searching:
+  - {fileID: 8300000, guid: b348a28784bfe0db293c71ab43439f54, type: 3}
+  - {fileID: 8300000, guid: 96314a327d621210e997416408dcb1e9, type: 3}
+  - {fileID: 8300000, guid: 17ab72d9c9028359ca167007125d0303, type: 3}
 --- !u!195 &260023786944154524
 NavMeshAgent:
   m_ObjectHideFlags: 0

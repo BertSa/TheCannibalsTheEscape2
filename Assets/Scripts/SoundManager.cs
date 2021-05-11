@@ -12,12 +12,11 @@ public class SoundManager : Singleton<SoundManager>
 {
     private AudioSource[] findObjectsOfType;
     private AudioSource _audioSource;
-    [Header("Clips")] [SerializeField] private AudioClip ending;
-    [SerializeField] private List<AudioClip> ambiances;
-    [SerializeField] private List<AudioClip> alone;
-
+    [Header("Clips")] [SerializeField] private AudioClip badEnding;
+    [SerializeField] private List<AudioClip> following;
+    [SerializeField] private List<AudioClip> searching;
+    
     private Transform _player;
-    [SerializeField] private AudioClip running;
 
     protected override void Awake()
     {
@@ -27,10 +26,10 @@ public class SoundManager : Singleton<SoundManager>
 
     private void Start()
     {
-        if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
-        var pos = RandomCircle(_player.position, 6.0f);
-        AudioSource.PlayClipAtPoint(ambiances[Random.Range(0, ambiances.Count)], pos, MaxValue);
-        Singleton<CannibalsManager>.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
+        // if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
+        // var pos = RandomCircle(_player.position, 6.0f);
+        // AudioSource.PlayClipAtPoint(following[Random.Range(0, following.Count)], pos, MaxValue);
+        CannibalsManager.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
         GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
@@ -57,8 +56,8 @@ public class SoundManager : Singleton<SoundManager>
     {
         if (previous == Searching && actual == Following)
         {
-            _audioSource.clip = running;
-            _audioSource.Play();
+            // _audioSource.clip = ;
+            // _audioSource.Play();
         }
         else if (actual == Searching)
         {
@@ -92,7 +91,7 @@ public class SoundManager : Singleton<SoundManager>
     public void EndGame()
     {
         PauseGame();
-        _audioSource.clip = ending;
+        _audioSource.clip = badEnding;
         _audioSource.Play();
     }
 

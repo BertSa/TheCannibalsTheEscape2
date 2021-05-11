@@ -44,12 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f368473e22356138bd8e3200a18d2ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ending: {fileID: 8300000, guid: e031a2074fc57e147b5c4e516f54a129, type: 3}
-  ambiances:
-  - {fileID: 8300000, guid: af6edb08e1f686041a968120f681aff9, type: 3}
-  - {fileID: 8300000, guid: 57f5f9fc49e59cb4ca4ae0d069d09f33, type: 3}
-  - {fileID: 8300000, guid: 727c90cef4c97c545a8860dda29b53b1, type: 3}
-  alone: []
+  badEnding: {fileID: 8300000, guid: 65f625ffc12796e47a873d7384a85362, type: 3}
+  following: []
+  searching: []
 --- !u!82 &6847072656139324286
 AudioSource:
   m_ObjectHideFlags: 0

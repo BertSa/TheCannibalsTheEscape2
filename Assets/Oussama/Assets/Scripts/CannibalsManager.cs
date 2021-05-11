@@ -9,12 +9,7 @@ public class CannibalsManager : Singleton<CannibalsManager>
     private EnemyFollow[] cannibals;
     [SerializeField] private CannibalsState state = Following;
     [HideInInspector] public EventAmbiance onAmbianceChanged;
-
-
-    [SerializeField] private AudioClip[] attack;
-    [SerializeField] private AudioClip[] follow;
-    [SerializeField] private AudioClip[] searching;
-
+    
     private Transform player;
     
     protected override void Awake()
