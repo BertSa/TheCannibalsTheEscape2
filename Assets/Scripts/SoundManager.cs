@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using static System.Single;
 using static CannibalsManager;
 using static CannibalsManager.CannibalsState;
 using static GameManager.GameState;
@@ -10,12 +8,10 @@ using Random = UnityEngine.Random;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    private AudioSource[] _findObjectsOfType;
-    private AudioSource _audioSource;
     [Header("Clips")] [SerializeField] private AudioClip badEnding;
-    [SerializeField] private List<AudioClip> following;
-    [SerializeField] private List<AudioClip> searching;
-    
+    private AudioSource _audioSource;
+
+    private AudioSource[] _findObjectsOfType;
     private Transform _player;
 
     protected override void Awake()
@@ -62,9 +58,8 @@ public class SoundManager : Singleton<SoundManager>
         else if (actual == Searching)
         {
         }
-        else if (actual== Following)
+        else if (actual == Following)
         {
-            
         }
         else
         {
@@ -78,10 +73,7 @@ public class SoundManager : Singleton<SoundManager>
     private void PauseGame()
     {
         _findObjectsOfType = FindObjectsOfType<AudioSource>();
-        foreach (var audioSource in _findObjectsOfType)
-        {
-            audioSource.Pause();
-        }
+        foreach (var audioSource in _findObjectsOfType) audioSource.Pause();
     }
 
     public void EndGame()
@@ -96,9 +88,9 @@ public class SoundManager : Singleton<SoundManager>
         const float minDistance = 3f;
         var ang = Random.value * 360;
         var pos = center;
-        pos.x += minDistance + (radius * Mathf.Sin(ang * Mathf.Deg2Rad));
+        pos.x += minDistance + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
         pos.y += Random.Range(0, 7);
-        pos.z += minDistance + (radius * Mathf.Cos(ang * Mathf.Deg2Rad));
+        pos.z += minDistance + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
         return pos;
     }
 

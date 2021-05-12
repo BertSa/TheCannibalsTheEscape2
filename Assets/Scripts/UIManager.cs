@@ -29,6 +29,8 @@ public class UIManager : Singleton<UIManager>
             case LostTorch:
                 cinematic.SetActive(false);
                 break;
+            case Pause:
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
         }

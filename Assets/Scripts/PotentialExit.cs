@@ -10,15 +10,15 @@ public class PotentialExit : MonoBehaviour
         SetAsExit(false);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (GameManager.IsInitialized) GameManager.Instance.SetGameState(GameManager.GameState.Won);
+    }
+
     public void SetAsExit(bool isExit)
     {
         exit.SetActive(isExit);
         deadEnd.SetActive(!isExit);
         GetComponent<Collider>().enabled = isExit;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (GameManager.IsInitialized) GameManager.Instance.SetGameState(GameManager.GameState.Won);
     }
 }

@@ -11,10 +11,10 @@ public class TorchScript : Singleton<TorchScript>
     [SerializeField] private ParticleSystem fireParticle;
 
     private Light _component;
+    private float _percentageHealth;
     private float _random;
 
     private float _torchHealth;
-    private float _percentageHealth;
 
 
     private void Start()
@@ -41,7 +41,8 @@ public class TorchScript : Singleton<TorchScript>
         else
             _torchHealth = Mathf.Clamp(_torchHealth += 1 * Time.deltaTime, 0, MaxTorchHealth);
 
-        _percentageHealth = (_torchHealth / MaxTorchHealth);
-        if (_percentageHealth <= 0.01 && GameManager.IsInitialized) GameManager.Instance.SetGameState(GameManager.GameState.Won);
+        _percentageHealth = _torchHealth / MaxTorchHealth;
+        if (_percentageHealth <= 0.01 && GameManager.IsInitialized)
+            GameManager.Instance.SetGameState(GameManager.GameState.Won);
     }
 }

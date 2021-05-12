@@ -4,9 +4,9 @@ using UnityEngine.UI;
 public class MoveImage : MonoBehaviour
 {
     private const float MFadeDuration = 3000.0f;
-    private RawImage _mImg;
 
     [SerializeField] private bool mIgnoreTimeScale = true;
+    private RawImage _mImg;
 
     private void Start()
     {

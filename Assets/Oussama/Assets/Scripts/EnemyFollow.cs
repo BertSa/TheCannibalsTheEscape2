@@ -84,7 +84,7 @@ public class EnemyFollow : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized) 
+        if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized)
             GameManager.Instance.SetGameState(GameState.LostCannibals);
     }
 
@@ -144,17 +144,19 @@ public class EnemyFollow : MonoBehaviour
         _activePlayer = nextPlayer;
     }
 
-    private static IEnumerator FadeAudioSource(AudioSource player, float duration, float targetVolume, Action finishedCallback)
+    private static IEnumerator FadeAudioSource(AudioSource player, float duration, float targetVolume,
+        Action finishedCallback)
     {
         var steps = (int) (VolumeChangesPerSecond * duration);
         var stepTime = duration / steps;
         var stepSize = (targetVolume - player.volume) / steps;
-        
+
         for (var i = 1; i < steps; ++i)
         {
             player.volume += stepSize;
             yield return new WaitForSeconds(stepTime);
         }
+
         player.volume = targetVolume;
         finishedCallback?.Invoke();
     }

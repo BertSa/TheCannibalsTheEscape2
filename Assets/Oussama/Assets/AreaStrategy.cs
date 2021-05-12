@@ -2,11 +2,11 @@
 
 public class AreaStrategy : MonoBehaviour
 {
-    void Start()
+    private void Start()
     {
     }
-    
-    void Update()
+
+    private void Update()
     {
     }
 

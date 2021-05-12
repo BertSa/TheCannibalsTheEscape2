@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using static CannibalsManager.CannibalsState;
 using static SoundManager;
@@ -28,13 +27,13 @@ public class CannibalsManager : Singleton<CannibalsManager>
             var dotProd = Vector3.Dot(dirFromAtoB, cannibalPosition.forward);
 
             var lookingAtPlayer = dotProd >= 0 && dotProd <= 1;
-            
-            if(lookingAtPlayer)
+
+            if (lookingAtPlayer)
             {
                 SetState(Following);
                 return;
             }
-          
+
             SetState(Searching);
             return;
         }
@@ -45,7 +44,7 @@ public class CannibalsManager : Singleton<CannibalsManager>
     {
         var previous = state;
         state = actual;
-        
+
         onAmbianceChanged.Invoke(previous, actual);
     }
 
