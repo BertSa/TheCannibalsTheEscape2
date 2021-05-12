@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using static GameManager;
@@ -9,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class EnemyFollow : MonoBehaviour
 {
-    public const int DistanceToAttack = 2;
+    private const int DistanceToAttack = 2;
     private const int Acceleration = 1;
     private readonly int _attack = Animator.StringToHash("Attack");
 
