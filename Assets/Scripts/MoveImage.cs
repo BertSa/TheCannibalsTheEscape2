@@ -1,24 +1,51 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class MoveImage : MonoBehaviour
 {
-    private const float MFadeDuration = 3000.0f;
-
-    [SerializeField] private bool mIgnoreTimeScale = true;
-    private RawImage _mImg;
-
-    private void Start()
-    {
-        _mImg = GetComponent<RawImage>();
-    }
+    [HideInInspector] public Cinematic cinematic;
+    
+    [SerializeField] private Image mImg;
+    [SerializeField] private float moveX = -0.2f;
+    [SerializeField] private float moveY = -0.1f;
+    private bool isFading;
+    private bool isMoving;
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-            _mImg.CrossFadeAlpha(0f, MFadeDuration, mIgnoreTimeScale);
-        if (Input.GetMouseButtonDown(1))
-            _mImg.CrossFadeAlpha(1f, MFadeDuration, mIgnoreTimeScale);
-        transform.position += new Vector3(-0.2f, -0.01f);
+        if (!isMoving) return;
+        
+        transform.position += new Vector3(moveX, moveY);
+        if (isFading || !(transform.position.y <= 300)) return;
+        StartCoroutine(FadeImage(true));
+        isFading = true;
+    }
+
+    private IEnumerator FadeImage(bool fadeAway)
+    {
+        if (fadeAway)
+        {
+            for (float i = 5; i >= 0; i -= Time.deltaTime)
+            {
+                mImg.color = new Color(1, 1, 1, i);
+                yield return null;
+            }
+        }
+        else
+        {
+            for (float i = 0; i <= 1; i += Time.deltaTime)
+            {
+                mImg.color = new Color(1, 1, 1, i);
+                yield return null;
+            }
+        }
+
+        cinematic.NextSlide();
+    }
+
+    public void Move()
+    {
+        isMoving = true;
     }
 }
