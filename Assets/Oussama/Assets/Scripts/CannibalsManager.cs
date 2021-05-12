@@ -1,22 +1,34 @@
-using System;
 using UnityEngine;
 using static CannibalsManager.CannibalsState;
 using static SoundManager;
 
 public class CannibalsManager : Singleton<CannibalsManager>
 {
+    public enum CannibalsState
+    {
+        /// <summary>
+        ///     when cannibals are following the player
+        /// </summary>
+        Following,
 
-    private EnemyFollow[] cannibals;
+        /// <summary>
+        ///     when cannibals are searching the player
+        /// </summary>
+        Searching
+    }
+
     [SerializeField] private CannibalsState state = Following;
     [HideInInspector] public EventAmbiance onAmbianceChanged;
-    
+
+    private EnemyFollow[] cannibals;
+
     private Transform player;
-    
+
     protected override void Awake()
     {
         base.Awake();
     }
-    
+
     private void Start()
     {
         cannibals = FindObjectsOfType<EnemyFollow>();
@@ -33,13 +45,13 @@ public class CannibalsManager : Singleton<CannibalsManager>
             var dotProd = Vector3.Dot(dirFromAtoB, cannibalPosition.forward);
 
             var lookingAtPlayer = dotProd >= 0 && dotProd <= 1;
-            
-            if(lookingAtPlayer)
+
+            if (lookingAtPlayer)
             {
                 SetState(Following);
                 return;
             }
-          
+
             SetState(Searching);
             return;
         }
@@ -50,21 +62,7 @@ public class CannibalsManager : Singleton<CannibalsManager>
     {
         var previous = state;
         state = actual;
-        
+
         onAmbianceChanged.Invoke(previous, actual);
-    }
-
-
-    public enum CannibalsState
-    {
-        /// <summary>
-        /// when cannibals are following the player
-        /// </summary>
-        Following,
-        
-        /// <summary>
-        /// when cannibals are searching the player
-        /// </summary>
-        Searching,
     }
 }

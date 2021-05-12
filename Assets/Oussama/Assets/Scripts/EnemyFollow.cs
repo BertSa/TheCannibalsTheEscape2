@@ -10,28 +10,16 @@ public class EnemyFollow : MonoBehaviour
 {
     public const int DistanceToAttack = 4;
     private const int Acceleration = 1;
-    private readonly int _attack = Animator.StringToHash("Attack");
 
     [SerializeField] private int speed = 5;
     [Header("Clips")] [SerializeField] private AudioClip[] attack;
     [SerializeField] private AudioClip[] follow;
     [SerializeField] private AudioClip[] searching;
+    private readonly int _attack = Animator.StringToHash("Attack");
 
     private NavMeshAgent _agent;
-    private Transform _player;
     private Animator _animator;
-
-    #region Audio
-
-    private readonly IEnumerator[] _fader = new IEnumerator[2];
-    private int _activePlayer;
-
-    private const int VolumeChangesPerSecond = 15;
-    private const float FadeDuration = 1.0f;
-    private const float Volume = 0.5f;
-    private AudioSource[] _clipPlaying;
-
-    #endregion
+    private Transform _player;
 
     private void Awake()
     {
@@ -75,14 +63,14 @@ public class EnemyFollow : MonoBehaviour
         Play(isNearPlayer ? attack : follow);
 
         var t = transform;
-        
-        Vector3 targetDirection = playerPosition - t.position;
+
+        var targetDirection = playerPosition - t.position;
 
         // The step size is equal to speed times frame time.
-        float singleStep = speed * Time.deltaTime;
+        var singleStep = speed * Time.deltaTime;
 
         // Rotate the forward vector towards the target direction by one step
-        Vector3 newDirection = Vector3.RotateTowards(t.forward, targetDirection, singleStep, 0.0f);
+        var newDirection = Vector3.RotateTowards(t.forward, targetDirection, singleStep, 0.0f);
 
         // Draw a ray pointing at our target in
         Debug.DrawRay(transform.position, newDirection, Color.red);
@@ -95,7 +83,7 @@ public class EnemyFollow : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized) 
+        if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized)
             GameManager.Instance.SetGameState(GameState.LostCannibals);
     }
 
@@ -143,7 +131,7 @@ public class EnemyFollow : MonoBehaviour
     private void Play(IReadOnlyList<AudioClip> clips)
     {
         var clip = clips[Random.Range(0, clips.Count)];
-        if ((clips == follow && _clipPlaying[_activePlayer].isPlaying) || clip == _clipPlaying[_activePlayer].clip)
+        if (clips == follow && _clipPlaying[_activePlayer].isPlaying || clip == _clipPlaying[_activePlayer].clip)
             return;
 
         foreach (var enumerator in _fader)
@@ -165,18 +153,32 @@ public class EnemyFollow : MonoBehaviour
         _activePlayer = nextPlayer;
     }
 
-    private static IEnumerator FadeAudioSource(AudioSource player, float duration, float targetVolume, Action finishedCallback)
+    private static IEnumerator FadeAudioSource(AudioSource player, float duration, float targetVolume,
+        Action finishedCallback)
     {
         var steps = (int) (VolumeChangesPerSecond * duration);
         var stepTime = duration / steps;
         var stepSize = (targetVolume - player.volume) / steps;
-        
+
         for (var i = 1; i < steps; ++i)
         {
             player.volume += stepSize;
             yield return new WaitForSeconds(stepTime);
         }
+
         player.volume = targetVolume;
         finishedCallback?.Invoke();
     }
+
+    #region Audio
+
+    private readonly IEnumerator[] _fader = new IEnumerator[2];
+    private int _activePlayer;
+
+    private const int VolumeChangesPerSecond = 15;
+    private const float FadeDuration = 1.0f;
+    private const float Volume = 0.5f;
+    private AudioSource[] _clipPlaying;
+
+    #endregion
 }

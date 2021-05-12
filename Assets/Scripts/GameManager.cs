@@ -6,9 +6,34 @@ using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
-    private GameState _gameState = Playing;
+    public enum GameState
+    {
+        Playing,
+
+        /// <summary>
+        ///     quand le joueur se fait manger par les cannibals...
+        /// </summary>
+        LostCannibals,
+
+        /// <summary>
+        ///     quand la flamme du joueur s'éteinds...
+        /// </summary>
+        LostTorch,
+
+        /// <summary>
+        ///     quand la partie est gagné
+        /// </summary>
+        Won,
+
+        /// <summary>
+        ///     quand la partie est en pause
+        /// </summary>
+        Pause
+    }
+
     [HideInInspector] public EventGameState onGameStateChanged;
-    private bool ddd = false;
+    private GameState _gameState = Playing;
+    private bool ddd;
 
 
     private void Start()
@@ -20,22 +45,16 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        if ((Input.GetKey(KeyCode.Escape)))
-        {
+        if (Input.GetKey(KeyCode.Escape))
             if (CannibalsManager.IsInitialized)
             {
                 if (ddd)
-                {
                     CannibalsManager.Instance.SetState(Searching);
-                }
                 else
-                {
                     CannibalsManager.Instance.SetState(Following);
-                }
 
                 ddd = !ddd;
             }
-        }
     }
 
     public void SetGameState(GameState gameState)
@@ -64,31 +83,5 @@ public class GameManager : Singleton<GameManager>
         }
 
         onGameStateChanged.Invoke(oldGameState, _gameState);
-    }
-
-
-    public enum GameState
-    {
-        Playing,
-
-        /// <summary>
-        /// quand le joueur se fait manger par les cannibals...
-        /// </summary>
-        LostCannibals,
-
-        /// <summary>
-        /// quand la flamme du joueur s'éteinds...
-        /// </summary>
-        LostTorch,
-
-        /// <summary>
-        /// quand la partie est gagné
-        /// </summary>
-        Won,
-
-        /// <summary>
-        /// quand la partie est en pause
-        /// </summary>
-        Pause
     }
 }
