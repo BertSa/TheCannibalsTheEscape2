@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    private AudioSource[] findObjectsOfType;
+    private AudioSource[] _findObjectsOfType;
     private AudioSource _audioSource;
     [Header("Clips")] [SerializeField] private AudioClip badEnding;
     [SerializeField] private List<AudioClip> following;
@@ -54,6 +54,7 @@ public class SoundManager : Singleton<SoundManager>
 
     private void HandleAmbianceChanged(CannibalsState previous, CannibalsState actual)
     {
+        //??? wtf
         if (previous == Searching && actual == Following)
         {
             // _audioSource.clip = ;
@@ -77,8 +78,8 @@ public class SoundManager : Singleton<SoundManager>
     // ReSharper disable Unity.PerformanceAnalysis
     private void PauseGame()
     {
-        findObjectsOfType = FindObjectsOfType<AudioSource>();
-        foreach (var audioSource in findObjectsOfType)
+        _findObjectsOfType = FindObjectsOfType<AudioSource>();
+        foreach (var audioSource in _findObjectsOfType)
         {
             audioSource.Pause();
         }

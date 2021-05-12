@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using static GameManager;
@@ -9,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class EnemyFollow : MonoBehaviour
 {
-    public const int DistanceToAttack = 2;
+    public const int DistanceToAttack = 4;
     private const int Acceleration = 1;
     private readonly int _attack = Animator.StringToHash("Attack");
 
@@ -24,7 +23,7 @@ public class EnemyFollow : MonoBehaviour
 
     #region Audio
 
-    private readonly IEnumerator[] fader = new IEnumerator[2];
+    private readonly IEnumerator[] _fader = new IEnumerator[2];
     private int _activePlayer;
 
     private const int VolumeChangesPerSecond = 15;
@@ -61,6 +60,7 @@ public class EnemyFollow : MonoBehaviour
         _agent.acceleration = Acceleration;
         _agent.speed = speed;
         _agent.autoRepath = true;
+
         Play(follow);
     }
 
@@ -69,62 +69,74 @@ public class EnemyFollow : MonoBehaviour
         var playerPosition = _player.position;
 
         _agent.SetDestination(playerPosition);
-        
-        var isNearPlayer = IsNearPlayer(2, DistanceToAttack);
-        
+
+        var isNearPlayer = IsNearPlayer(DistanceToAttack);
+
         Play(isNearPlayer ? attack : follow);
+
+        var t = transform;
         
+        Vector3 targetDirection = playerPosition - t.position;
+
+        // The step size is equal to speed times frame time.
+        float singleStep = speed * Time.deltaTime;
+
+        // Rotate the forward vector towards the target direction by one step
+        Vector3 newDirection = Vector3.RotateTowards(t.forward, targetDirection, singleStep, 0.0f);
+
+        // Draw a ray pointing at our target in
+        Debug.DrawRay(transform.position, newDirection, Color.red);
+
+        // Calculate a rotation a step closer to the target and applies rotation to this object
+        transform.rotation = Quaternion.LookRotation(newDirection);
+
         _animator.SetBool(_attack, isNearPlayer);
-        
-        transform.rotation = Quaternion.LookRotation(playerPosition - transform.position);
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized)
+        if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized) 
             GameManager.Instance.SetGameState(GameState.LostCannibals);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("areaPlayer"))
-        {
-        }
+            Play(follow);
     }
 
-    private bool IsPlayerInArea()
-    {
-        const int maxColliders = 10;
-        Collider[] hitColliders = new Collider[maxColliders];
-        var numColliders = Physics.OverlapSphereNonAlloc(transform.position, 50, hitColliders);
-        return false;
-    }
-    
-    public void MoveToward( Vector3 targetPoint)
-    {
-        Quaternion rotation = Quaternion.LookRotation(targetPoint - transform.position);
-        rotation.x = 0f;
-        rotation.z = 0f;
-        
-        Transform transform1 = transform;
-        
-        transform1.rotation = Quaternion.Slerp(transform1.rotation, rotation, Time.deltaTime * _agent.angularSpeed);
- 
-        Vector3 movementVelocity = transform1.forward * speed;
- 
-        movementVelocity.y = -.08f;
-    }
+    //
+    // private bool IsPlayerInArea()
+    // {
+    //     const int maxColliders = 10;
+    //     Collider[] hitColliders = new Collider[maxColliders];
+    //     var numColliders = Physics.OverlapSphereNonAlloc(transform.position, 50, hitColliders);
+    //
+    //     return false;
+    // }
+
+    // public void MoveToward( Vector3 targetPoint)
+    // {
+    //     Quaternion rotation = Quaternion.LookRotation(targetPoint - transform.position);
+    //     rotation.x = 0f;
+    //     rotation.z = 0f;
+    //     
+    //     Transform t = transform;
+    //     
+    //     t.rotation = Quaternion.Slerp(t.rotation, rotation, Time.deltaTime * _agent.angularSpeed);
+    //
+    //     Vector3 movementVelocity = t.forward * speed;
+    //
+    //     movementVelocity.y = -.08f;
+    // }
 
 
-    public bool IsNearPlayer(float rateDistance, int distance)
+    public bool IsNearPlayer(float distance)
     {
-        if (rateDistance <= 0)
-            throw new ArgumentOutOfRangeException(nameof(rateDistance) + " cannot be lower or equals than 0");
-
         if (distance <= 0)
             throw new ArgumentOutOfRangeException(nameof(distance) + " cannot be lower or equals than 0");
 
-        return Vector3.Distance(transform.position, _player.position) <= distance * rateDistance;
+        return Vector3.Distance(transform.position, _player.position) <= distance;
     }
 
 
@@ -134,21 +146,21 @@ public class EnemyFollow : MonoBehaviour
         if ((clips == follow && _clipPlaying[_activePlayer].isPlaying) || clip == _clipPlaying[_activePlayer].clip)
             return;
 
-        foreach (var i in fader)
-            if (i != null)
-                StopCoroutine(i);
+        foreach (var enumerator in _fader)
+            if (enumerator != null)
+                StopCoroutine(enumerator);
 
         if (_clipPlaying[_activePlayer].volume > 0)
         {
-            fader[0] = FadeAudioSource(_clipPlaying[_activePlayer], FadeDuration, 0.0f, () => { fader[0] = null; });
-            StartCoroutine(fader[0]);
+            _fader[0] = FadeAudioSource(_clipPlaying[_activePlayer], FadeDuration, 0.0f, () => { _fader[0] = null; });
+            StartCoroutine(_fader[0]);
         }
 
         var nextPlayer = (_activePlayer + 1) % _clipPlaying.Length;
         _clipPlaying[nextPlayer].clip = clip;
         _clipPlaying[nextPlayer].Play();
-        fader[1] = FadeAudioSource(_clipPlaying[nextPlayer], FadeDuration, Volume, () => { fader[1] = null; });
-        StartCoroutine(fader[1]);
+        _fader[1] = FadeAudioSource(_clipPlaying[nextPlayer], FadeDuration, Volume, () => { _fader[1] = null; });
+        StartCoroutine(_fader[1]);
 
         _activePlayer = nextPlayer;
     }
@@ -158,8 +170,8 @@ public class EnemyFollow : MonoBehaviour
         var steps = (int) (VolumeChangesPerSecond * duration);
         var stepTime = duration / steps;
         var stepSize = (targetVolume - player.volume) / steps;
-
-        for (var i = 1; i < steps; i++)
+        
+        for (var i = 1; i < steps; ++i)
         {
             player.volume += stepSize;
             yield return new WaitForSeconds(stepTime);
