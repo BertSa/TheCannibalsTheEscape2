@@ -20,22 +20,10 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        if ((Input.GetKey(KeyCode.Escape)))
-        {
-            if (CannibalsManager.IsInitialized)
-            {
-                if (ddd)
-                {
-                    CannibalsManager.Instance.SetState(Searching);
-                }
-                else
-                {
-                    CannibalsManager.Instance.SetState(Following);
-                }
-
-                ddd = !ddd;
-            }
-        }
+        if ((!Input.GetKey(KeyCode.Escape))) return;
+        if (!CannibalsManager.IsInitialized) return;
+        CannibalsManager.Instance.SetState(ddd ? Searching : Following);
+        ddd = !ddd;
     }
 
     public void SetGameState(GameState gameState)

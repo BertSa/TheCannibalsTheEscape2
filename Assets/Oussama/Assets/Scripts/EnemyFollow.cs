@@ -8,20 +8,22 @@ using Random = UnityEngine.Random;
 
 public class EnemyFollow : MonoBehaviour
 {
-    public const int DistanceToAttack = 4;
+    private const int DistanceToAttack = 4;
     private const int Acceleration = 1;
     private readonly int _attack = Animator.StringToHash("Attack");
 
     [SerializeField] private int speed = 5;
-    [Header("Clips")] [SerializeField] private AudioClip[] attack;
-    [SerializeField] private AudioClip[] follow;
-    [SerializeField] private AudioClip[] searching;
 
     private NavMeshAgent _agent;
     private Transform _player;
     private Animator _animator;
+    private Rigidbody _rb;
 
     #region Audio
+    
+    [Header("Clips")] [SerializeField] private AudioClip[] attack;
+    [SerializeField] private AudioClip[] follow;
+    [SerializeField] private AudioClip[] searching;
 
     private readonly IEnumerator[] _fader = new IEnumerator[2];
     private int _activePlayer;
@@ -60,6 +62,7 @@ public class EnemyFollow : MonoBehaviour
         _agent.acceleration = Acceleration;
         _agent.speed = speed;
         _agent.autoRepath = true;
+        _agent.destination = _player.position;
 
         Play(follow);
     }
@@ -73,23 +76,9 @@ public class EnemyFollow : MonoBehaviour
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
         Play(isNearPlayer ? attack : follow);
-
-        var t = transform;
         
-        Vector3 targetDirection = playerPosition - t.position;
-
-        // The step size is equal to speed times frame time.
-        float singleStep = speed * Time.deltaTime;
-
-        // Rotate the forward vector towards the target direction by one step
-        Vector3 newDirection = Vector3.RotateTowards(t.forward, targetDirection, singleStep, 0.0f);
-
-        // Draw a ray pointing at our target in
-        Debug.DrawRay(transform.position, newDirection, Color.red);
-
-        // Calculate a rotation a step closer to the target and applies rotation to this object
-        transform.rotation = Quaternion.LookRotation(newDirection);
-
+        MoveToward(_agent.destination);
+        
         _animator.SetBool(_attack, isNearPlayer);
     }
 
@@ -105,33 +94,24 @@ public class EnemyFollow : MonoBehaviour
             Play(follow);
     }
 
-    //
-    // private bool IsPlayerInArea()
-    // {
-    //     const int maxColliders = 10;
-    //     Collider[] hitColliders = new Collider[maxColliders];
-    //     var numColliders = Physics.OverlapSphereNonAlloc(transform.position, 50, hitColliders);
-    //
-    //     return false;
-    // }
+    private void MoveToward( Vector3 targetPoint)
+    {
+        var rotation = Quaternion.LookRotation(targetPoint - transform.position);
+        rotation.x = 0f;
+        rotation.z = 0f;
+        
+        var t = transform;
+        
+        t.rotation = Quaternion.Slerp(t.rotation, rotation, Time.deltaTime * _agent.angularSpeed);
+    
+        var movementVelocity = t.forward * speed;
+    
+        movementVelocity.y = -.08f;
+        
+        _rb.velocity = movementVelocity;
+    }
 
-    // public void MoveToward( Vector3 targetPoint)
-    // {
-    //     Quaternion rotation = Quaternion.LookRotation(targetPoint - transform.position);
-    //     rotation.x = 0f;
-    //     rotation.z = 0f;
-    //     
-    //     Transform t = transform;
-    //     
-    //     t.rotation = Quaternion.Slerp(t.rotation, rotation, Time.deltaTime * _agent.angularSpeed);
-    //
-    //     Vector3 movementVelocity = t.forward * speed;
-    //
-    //     movementVelocity.y = -.08f;
-    // }
-
-
-    public bool IsNearPlayer(float distance)
+    private bool IsNearPlayer(float distance)
     {
         if (distance <= 0)
             throw new ArgumentOutOfRangeException(nameof(distance) + " cannot be lower or equals than 0");
@@ -139,11 +119,10 @@ public class EnemyFollow : MonoBehaviour
         return Vector3.Distance(transform.position, _player.position) <= distance;
     }
 
-
     private void Play(IReadOnlyList<AudioClip> clips)
     {
         var clip = clips[Random.Range(0, clips.Count)];
-        if ((clips == follow && _clipPlaying[_activePlayer].isPlaying) || clip == _clipPlaying[_activePlayer].clip)
+        if (clips == follow && _clipPlaying[_activePlayer].isPlaying || clip == _clipPlaying[_activePlayer].clip)
             return;
 
         foreach (var enumerator in _fader)

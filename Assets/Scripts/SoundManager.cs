@@ -54,7 +54,6 @@ public class SoundManager : Singleton<SoundManager>
 
     private void HandleAmbianceChanged(CannibalsState previous, CannibalsState actual)
     {
-        //??? wtf
         if (previous == Searching && actual == Following)
         {
             // _audioSource.clip = ;

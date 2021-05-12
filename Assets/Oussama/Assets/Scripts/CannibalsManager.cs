@@ -12,11 +12,6 @@ public class CannibalsManager : Singleton<CannibalsManager>
     
     private Transform player;
     
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-    
     private void Start()
     {
         cannibals = FindObjectsOfType<EnemyFollow>();
