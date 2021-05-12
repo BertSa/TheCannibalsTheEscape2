@@ -8,7 +8,7 @@ public class GameManager : Singleton<GameManager>
 {
     private GameState _gameState = Playing;
     [HideInInspector] public EventGameState onGameStateChanged;
-    private bool ddd = false;
+    private bool _searchingOrFollowing = false;
 
 
     private void Start()
@@ -22,8 +22,8 @@ public class GameManager : Singleton<GameManager>
     {
         if ((!Input.GetKey(KeyCode.Escape))) return;
         if (!CannibalsManager.IsInitialized) return;
-        CannibalsManager.Instance.SetState(ddd ? Searching : Following);
-        ddd = !ddd;
+        CannibalsManager.Instance.SetState(_searchingOrFollowing ? Searching : Following);
+        _searchingOrFollowing = !_searchingOrFollowing;
     }
 
     public void SetGameState(GameState gameState)

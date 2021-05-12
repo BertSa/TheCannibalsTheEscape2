@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Zombie
   - PotentialExit
   - areaPlayer
+  - Cannibal
   layers:
   - Default
   - TransparentFX

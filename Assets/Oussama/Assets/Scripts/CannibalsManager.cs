@@ -1,53 +1,41 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using static CannibalsManager.CannibalsState;
 using static SoundManager;
 
 public class CannibalsManager : Singleton<CannibalsManager>
 {
 
-    private EnemyFollow[] cannibals;
+    private EnemyFollow[] _cannibals;
     [SerializeField] private CannibalsState state = Following;
     [HideInInspector] public EventAmbiance onAmbianceChanged;
+
+    [HideInInspector] public EventCannibalState destinationChangeEvent;
     
-    private Transform player;
+    private Transform _destination;
     
     private void Start()
     {
-        cannibals = FindObjectsOfType<EnemyFollow>();
-        player = PlayerController.Instance.GetComponent<Transform>();
+        _cannibals = FindObjectsOfType<EnemyFollow>();
+        _destination = PlayerController.Instance.GetComponent<Transform>();
         SetState(Following);
+    }
+
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="actual"></param>
+    public void SetState(CannibalsState actual)
+    {
+        onAmbianceChanged.Invoke(state, actual);
+        state = actual;
     }
 
     private void Update()
     {
-        foreach (var c in cannibals)
-        {
-            var cannibalPosition = c.transform;
-            var dirFromAtoB = (player.transform.position - cannibalPosition.position).normalized;
-            var dotProd = Vector3.Dot(dirFromAtoB, cannibalPosition.forward);
-
-            var lookingAtPlayer = dotProd >= 0 && dotProd <= 1;
-
-            if (lookingAtPlayer)
-            {
-                SetState(Following);
-                return;
-            }
-
-            SetState(Searching);
-            return;
-        }
     }
-
-
-    public void SetState(CannibalsState actual)
-    {
-        var previous = state;
-        state = actual;
-
-        onAmbianceChanged.Invoke(previous, actual);
-    }
-
 
     public enum CannibalsState
     {
@@ -60,5 +48,10 @@ public class CannibalsManager : Singleton<CannibalsManager>
         /// when cannibals are searching the player
         /// </summary>
         Searching,
+    }
+    
+    [Serializable]
+    public class EventCannibalState : UnityEvent<Vector3>
+    {
     }
 }

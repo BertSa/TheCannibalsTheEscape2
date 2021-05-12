@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using static GameManager;
@@ -11,8 +13,9 @@ public class EnemyFollow : MonoBehaviour
     private const int DistanceToAttack = 4;
     private const int Acceleration = 1;
     private readonly int _attack = Animator.StringToHash("Attack");
+    private bool _alreadyNotified = false;
 
-    [SerializeField] private int speed = 5;
+    [SerializeField] private int speed = 7;
 
     private NavMeshAgent _agent;
     private Transform _player;
@@ -20,12 +23,13 @@ public class EnemyFollow : MonoBehaviour
     private Rigidbody _rb;
 
     #region Audio
-    
+
     [Header("Clips")] [SerializeField] private AudioClip[] attack;
     [SerializeField] private AudioClip[] follow;
     [SerializeField] private AudioClip[] searching;
 
     private readonly IEnumerator[] _fader = new IEnumerator[2];
+
     private int _activePlayer;
 
     private const int VolumeChangesPerSecond = 15;
@@ -43,27 +47,31 @@ public class EnemyFollow : MonoBehaviour
             gameObject.AddComponent<AudioSource>()
         };
 
-        foreach (var s in _clipPlaying)
+        foreach (var source in _clipPlaying)
         {
-            s.loop = true;
-            s.playOnAwake = false;
-            s.volume = 0.0f;
-            s.spatialBlend = 1;
+            source.loop = true;
+            source.playOnAwake = false;
+            source.volume = 0.0f;
+            source.spatialBlend = 1;
         }
     }
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();
-        _animator.SetBool(_attack, false);
+        if(CannibalsManager.IsInitialized)
+            CannibalsManager.Instance.destinationChangeEvent.AddListener(HandleDestinationChange);
+        
+        _rb = GetComponent<Rigidbody>();
         _agent = GetComponent<NavMeshAgent>();
+        _animator = GetComponent<Animator>();
         _player = PlayerController.Instance.GetComponent<Transform>();
+        _animator.SetBool(_attack, false);
 
         _agent.acceleration = Acceleration;
         _agent.speed = speed;
         _agent.autoRepath = true;
         _agent.destination = _player.position;
-
+        _agent.autoBraking = false;
         Play(follow);
     }
 
@@ -88,12 +96,6 @@ public class EnemyFollow : MonoBehaviour
             GameManager.Instance.SetGameState(GameState.LostCannibals);
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag("areaPlayer"))
-            Play(follow);
-    }
-
     private void MoveToward( Vector3 targetPoint)
     {
         var rotation = Quaternion.LookRotation(targetPoint - transform.position);
@@ -106,7 +108,7 @@ public class EnemyFollow : MonoBehaviour
     
         var movementVelocity = t.forward * speed;
     
-        movementVelocity.y = -.08f;
+        movementVelocity.y = -.1f;
         
         _rb.velocity = movementVelocity;
     }
@@ -142,6 +144,13 @@ public class EnemyFollow : MonoBehaviour
         StartCoroutine(_fader[1]);
 
         _activePlayer = nextPlayer;
+    }
+    
+    private  void HandleDestinationChange(Vector3 destination)
+    {
+        if(_agent.destination != destination && _alreadyNotified)
+            _agent.SetDestination(destination);
+        _alreadyNotified = true;
     }
 
     private static IEnumerator FadeAudioSource(AudioSource player, float duration, float targetVolume,
