@@ -98,7 +98,6 @@ public class PlayerController : Singleton<PlayerController>
         #region Movement
 
         var targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        print(targetVelocity.z);
         _isWalking = (targetVelocity.x != 0 || targetVelocity.z != 0 && _isGrounded);
 
         if (targetVelocity.z > 0  && Input.GetKey(SprintKey))

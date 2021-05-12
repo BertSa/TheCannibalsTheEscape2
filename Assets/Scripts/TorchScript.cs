@@ -4,7 +4,7 @@ public class TorchScript : Singleton<TorchScript>
 {
     private const float DefaultScale = 2.0f;
     private const float MINIntensity = 2f;
-    private const float MAXIntensity = 3f;
+    private const float MAXIntensity = 2.5f;
     private const float MaxTorchHealth = 5f;
 
     [SerializeField] private Light fireLight;

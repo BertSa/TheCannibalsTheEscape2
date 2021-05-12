@@ -70,22 +70,22 @@ public class GameManager : Singleton<GameManager>
     public enum GameState
     {
         Playing,
-        
+
         /// <summary>
         /// quand le joueur se fait manger par les cannibals...
         /// </summary>
         LostCannibals,
-        
+
         /// <summary>
         /// quand la flamme du joueur s'éteinds...
         /// </summary>
         LostTorch,
-        
+
         /// <summary>
         /// quand la partie est gagné
         /// </summary>
         Won,
-        
+
         /// <summary>
         /// quand la partie est en pause
         /// </summary>
