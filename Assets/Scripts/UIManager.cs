@@ -6,10 +6,10 @@ using static GameManager.GameState;
 
 public class UIManager : Singleton<UIManager>
 {
-    [SerializeField] private GameObject cinematicBeginning;
-    [SerializeField] private GameObject cinematicEndWin;
-    [SerializeField] private GameObject cinematicEndLostTorch;
-    [SerializeField] private GameObject cinematicEndLostCannibals;
+    [SerializeField] private Cinematic cinematicBeginning;
+    [SerializeField] private Cinematic cinematicEndWin;
+    [SerializeField] private Cinematic cinematicEndLostTorch;
+    [SerializeField] private Cinematic cinematicEndLostCannibals;
     [SerializeField] private GameObject hud;
 
     private void Start()
@@ -23,25 +23,36 @@ public class UIManager : Singleton<UIManager>
         switch (actual)
         {
             case Beginning:
-                cinematicBeginning.SetActive(true);
+                cinematicBeginning.gameObject.SetActive(true);
                 break;
             case Pause:
                 break;
             case Playing:
-                if (previous == Beginning) cinematicBeginning.SetActive(false);
+                if (previous == Beginning) cinematicBeginning.gameObject.SetActive(false);
                 hud.SetActive(true);
                 break;
             case Won:
-                cinematicEndWin.SetActive(true);
+                cinematicEndWin.gameObject.SetActive(true);
                 break;
             case LostCannibals:
-                cinematicEndLostCannibals.SetActive(true);
+                cinematicEndLostCannibals.gameObject.SetActive(true);
                 break;
             case LostTorch:
-                cinematicEndLostTorch.SetActive(true);
+                cinematicEndLostTorch.gameObject.SetActive(true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
+        }
+    }
+
+    public void CinematicFinished(Cinematic cinematic)
+    {
+        if (cinematic.Equals(cinematicBeginning))
+        {
+            if (GameManager.IsInitialized) GameManager.Instance.SetGameState(Playing);
+        }else if (cinematic.Equals(cinematicEndWin))
+        {
+            
         }
     }
 }

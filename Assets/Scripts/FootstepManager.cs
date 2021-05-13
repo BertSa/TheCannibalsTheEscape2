@@ -18,7 +18,8 @@ public class FootstepManager : MonoBehaviour
 
     private void Update()
     {
-        if (!player.isSprinting && !player.isWalking && !audioSource.isPlaying||GameManager.Instance.gameState!=Playing) return;
+        if (!player.isSprinting && !player.isWalking && !audioSource.isPlaying ||
+            GameManager.Instance.gameState != Playing) return;
         if (player.isSprinting)
         {
             if (audioSource.isPlaying && audioSource.clip == running)

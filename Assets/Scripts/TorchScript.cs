@@ -26,7 +26,7 @@ public class TorchScript : Singleton<TorchScript>
 
     private void Update()
     {
-        if (GameManager.Instance.gameState!=Playing) return;
+        if (GameManager.Instance.gameState != Playing) return;
         _random = Random.Range(0.0f, 150.0f);
         var noise = Mathf.PerlinNoise(_random * _percentageHealth, Time.time);
         _component.intensity = Mathf.Lerp(MINIntensity * _percentageHealth,
@@ -44,6 +44,6 @@ public class TorchScript : Singleton<TorchScript>
 
         _percentageHealth = _torchHealth / MaxTorchHealth;
         if (_percentageHealth <= 0.01 && GameManager.IsInitialized)
-            GameManager.Instance.SetGameState(Won);
+            GameManager.Instance.SetGameState(LostTorch);
     }
 }

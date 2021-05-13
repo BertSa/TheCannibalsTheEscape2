@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f368473e22356138bd8e3200a18d2ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  badEnding: {fileID: 8300000, guid: 65f625ffc12796e47a873d7384a85362, type: 3}
-  following: []
-  searching: []
+  lostCannibals: {fileID: 8300000, guid: 65f625ffc12796e47a873d7384a85362, type: 3}
+  lostTorch: {fileID: 8300000, guid: c24fff81e3e63c3499716b64cdaf6032, type: 3}
+  win: {fileID: 8300000, guid: e76663dfc4ce3ae439a1642d27ccefe3, type: 3}

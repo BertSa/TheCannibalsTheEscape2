@@ -1,23 +1,40 @@
 ﻿using UnityEngine;
-using static GameManager.GameState;
+using static Fade;
 
 public class Cinematic : MonoBehaviour
 {
     [SerializeField] private MoveImage[] images;
+    [SerializeField] private Fade fade;
     private int index;
 
     private void Start()
     {
-        foreach (var image in images) image.cinematic = this;
-        images[index].Move();
+        foreach (var image in images)
+        {
+            if (image.GetType() == typeof(MoveImage))
+            {
+                image.cinematic = this;
+            }
+        }
+
+        images[index].Activate(fade);
     }
 
 
     public void NextSlide()
     {
-        images[index].gameObject.SetActive(false);
         index++;
-        if (index < images.Length) images[index].Move();
-        else if (GameManager.IsInitialized) GameManager.Instance.SetGameState(Playing);
+        if (index < images.Length)
+        {
+            images[index].Activate(fade);
+        }
+        else
+            UIManager.Instance.CinematicFinished(this);
     }
+}
+
+public enum Fade
+{
+    FadeIn,
+    FadeOut
 }

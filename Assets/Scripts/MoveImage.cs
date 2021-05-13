@@ -5,47 +5,67 @@ using UnityEngine.UI;
 public class MoveImage : MonoBehaviour
 {
     [HideInInspector] public Cinematic cinematic;
-
     [SerializeField] private Image mImg;
     [SerializeField] private float moveX = -0.2f;
     [SerializeField] private float moveY = -0.1f;
-    private bool isFading;
-    private bool isMoving;
+    [SerializeField] private bool isFixed;
+
+    private const float FadeTime = 5;
+    private readonly YieldInstruction fadeInstruction = new YieldInstruction();
+    private bool isActivated;
+    private float targetAlpha;
+    private Fade fade;
 
     private void Update()
     {
-        if (!isMoving) return;
+        if (!isActivated || isFixed) return;
 
         transform.position += new Vector3(moveX, moveY);
-        if (isFading || (transform.position.y > 300)) return;
-        StartCoroutine(FadeImage(true));
-        isFading = false;
+        if (transform.position.y > 300) return;
+        if (fade == Fade.FadeOut) StartCoroutine(FadeOut());
+        isFixed = true;
     }
 
-    private IEnumerator FadeImage(bool fadeAway)
+    private IEnumerator FadeOut()
     {
-        if (fadeAway)
+        var elapsedTime = 0.0f;
+        var c = mImg.color;
+        while (elapsedTime < FadeTime)
         {
-            for (float i = 5; i >= 0; i -= Time.unscaledDeltaTime)
-            {
-                mImg.color = new Color(1, 1, 1, i);
-                yield return null;
-            }
-        }
-        else
-        {
-            for (float i = 0; i <= 1; i += Time.unscaledDeltaTime)
-            {
-                mImg.color = new Color(1, 1, 1, i);
-                yield return null;
-            }
+            elapsedTime += Time.unscaledDeltaTime;
+            c.a = 1.0f - Mathf.Clamp01(elapsedTime / FadeTime);
+            mImg.color = c;
+            yield return fadeInstruction;
         }
 
+        NextSlide();
+    }
+
+
+    private IEnumerator FadeIn()
+    {
+        var elapsedTime = 0.0f;
+        var c = mImg.color;
+        while (elapsedTime < FadeTime)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+            c.a = Mathf.Clamp01(elapsedTime / FadeTime);
+            mImg.color = c;
+            yield return fadeInstruction;
+        }
+
+        StartCoroutine(nameof(NextSlide), 2f);
+    }
+
+    public void Activate(Fade fadeNew)
+    {
+        isActivated = true;
+        fade = fadeNew;
+        if (fade == Fade.FadeIn) StartCoroutine(FadeIn());
+    }
+
+    private void NextSlide()
+    {
         cinematic.NextSlide();
-    }
-
-    public void Move()
-    {
-        isMoving = true;
     }
 }

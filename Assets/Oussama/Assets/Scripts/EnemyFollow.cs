@@ -10,7 +10,6 @@ using Random = UnityEngine.Random;
 public class EnemyFollow : MonoBehaviour
 {
     private const int DistanceToAttack = 4;
-    private const int Acceleration = 1;
     private readonly int _attack = Animator.StringToHash("Attack");
 
     [SerializeField] private int speed = 3;
@@ -62,10 +61,8 @@ public class EnemyFollow : MonoBehaviour
         _player = PlayerController.Instance.GetComponent<Transform>();
         _animator.SetBool(_attack, false);
 
-        // _agent.acceleration = Acceleration;
         _agent.speed = speed;
         _agent.autoRepath = true;
-        // _agent.destination = _player.position;
         _agent.autoBraking = false;
     }
 

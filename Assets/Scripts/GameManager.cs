@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
-    [HideInInspector]public GameState gameState = Beginning;
+    [HideInInspector] public GameState gameState = Beginning;
     [HideInInspector] public EventGameState onGameStateChanged;
 
     protected override void Awake()
@@ -22,10 +22,10 @@ public class GameManager : Singleton<GameManager>
         SetGameState(Beginning);
     }
 
-    public void SetGameState(GameState gameState)
+    public void SetGameState(GameState actual)
     {
-        var oldGameState = this.gameState;
-        switch (this.gameState = gameState)
+        var oldGameState = gameState;
+        switch (gameState = actual)
         {
             case Beginning:
             case Pause:
@@ -44,10 +44,10 @@ public class GameManager : Singleton<GameManager>
                 Time.timeScale = 1;
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(gameState), gameState, null);
+                throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
         }
 
-        onGameStateChanged.Invoke(oldGameState, this.gameState);
+        onGameStateChanged.Invoke(oldGameState, gameState);
     }
 
 

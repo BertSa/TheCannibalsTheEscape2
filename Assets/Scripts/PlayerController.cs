@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using static GameManager.GameState;
 
 public class PlayerController : Singleton<PlayerController>
 {
     private Rigidbody _rb;
     private EnemyFollow[] _cannibals;
-    
+
     #region Camera Movement Variables
 
     private const float MAXLookAngle = 50f;
@@ -54,7 +52,7 @@ public class PlayerController : Singleton<PlayerController>
     private const KeyCode JumpKey = KeyCode.Space;
 
     #endregion
-    
+
 
     protected override void Awake()
     {
@@ -71,7 +69,7 @@ public class PlayerController : Singleton<PlayerController>
 
     private void Update()
     {
-        if (GameManager.Instance.gameState!=Playing) return;
+        if (GameManager.Instance.gameState != Playing) return;
 
         #region Camera
 
@@ -102,7 +100,8 @@ public class PlayerController : Singleton<PlayerController>
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance.gameState!=Playing) return;
+        if (GameManager.Instance.gameState != Playing) return;
+
         #region Movement
 
         var targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));

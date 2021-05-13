@@ -121,37 +121,32 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: e5dc7c1c121b6bf0aa17a758bd9c4333, type: 2}
---- !u!1001 &103497227
+--- !u!1001 &1253082034
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 1044662867}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 260023786944154525, guid: 3326802b318608b4e85a0202cd03fe83,
-        type: 3}
-      propertyPath: speed
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5107502605514061843, guid: 3326802b318608b4e85a0202cd03fe83,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5107502605514061843, guid: 3326802b318608b4e85a0202cd03fe83,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.18
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 5107502605514061843, guid: 3326802b318608b4e85a0202cd03fe83,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.17
+      value: -2.35
       objectReference: {fileID: 0}
     - target: {fileID: 5107502605514061843, guid: 3326802b318608b4e85a0202cd03fe83,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 20.32
+      value: 2.36
       objectReference: {fileID: 0}
     - target: {fileID: 5107502605514061843, guid: 3326802b318608b4e85a0202cd03fe83,
         type: 3}
@@ -193,68 +188,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cannibal
       objectReference: {fileID: 0}
+    - target: {fileID: 8122848136635533824, guid: 3326802b318608b4e85a0202cd03fe83,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3326802b318608b4e85a0202cd03fe83, type: 3}
---- !u!1 &1044662866
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1044662867}
-  - component: {fileID: 1044662868}
-  m_Layer: 0
-  m_Name: CannibalsGroup
-  m_TagString: Untagged
-  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1044662867
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1044662866}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1355458558}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1044662868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1044662866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0b7cc2aeece7104e8bc6e451e849c4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  state: 0
-  onAmbianceChanged:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!1 &1157749182 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4043633665310209162, guid: f40724f45c8f709589343e9e22ab33ce,
-    type: 3}
-  m_PrefabInstance: {fileID: 7089403277377225571}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1355458558 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5107502605514061843, guid: 3326802b318608b4e85a0202cd03fe83,
-    type: 3}
-  m_PrefabInstance: {fileID: 103497227}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1371979877
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,20 +370,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7089403277832146331, guid: f40724f45c8f709589343e9e22ab33ce,
-        type: 3}
-      propertyPath: cinematicBeginning
-      value: 
-      objectReference: {fileID: 1157749182}
     - target: {fileID: 7089403277976744533, guid: f40724f45c8f709589343e9e22ab33ce,
         type: 3}
       propertyPath: m_Name
       value: GameManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 7089403277976744533, guid: f40724f45c8f709589343e9e22ab33ce,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7089403277976744539, guid: f40724f45c8f709589343e9e22ab33ce,
         type: 3}

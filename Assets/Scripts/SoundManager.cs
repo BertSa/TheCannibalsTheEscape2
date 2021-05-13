@@ -8,7 +8,10 @@ using Random = UnityEngine.Random;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    [Header("Clips")] [SerializeField] private AudioClip badEnding;
+    [Header("Clips")] 
+    [SerializeField] private AudioClip lostCannibals; 
+    [SerializeField] private AudioClip lostTorch;
+    [SerializeField] private AudioClip win;
     private AudioSource _audioSource;
 
     private AudioSource[] _findObjectsOfType;
@@ -45,9 +48,13 @@ public class SoundManager : Singleton<SoundManager>
                 PauseGame();
                 break;
             case Won:
+                EndGame(win);
+                break;
             case LostCannibals:
+                EndGame(lostCannibals);
+                break;
             case LostTorch:
-                EndGame();
+                EndGame(lostTorch);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
@@ -88,10 +95,10 @@ public class SoundManager : Singleton<SoundManager>
         foreach (var audioSource in _findObjectsOfType) audioSource.Pause();
     }
 
-    public void EndGame()
+    private void EndGame(AudioClip clip)
     {
         PauseGame();
-        _audioSource.clip = badEnding;
+        _audioSource.clip = clip;
         _audioSource.Play();
     }
 
