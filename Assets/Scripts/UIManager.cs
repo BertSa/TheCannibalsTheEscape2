@@ -17,19 +17,22 @@ public class UIManager : Singleton<UIManager>
     {
         switch (actual)
         {
+            case Beginning:
+                
+                break;
+            case Pause:
+                break;
             case Playing:
                 hud.SetActive(true);
                 break;
             case Won:
-                cinematic.SetActive(false);
+                cinematic.SetActive(true);
                 break;
             case LostCannibals:
-                cinematic.SetActive(false);
+                cinematic.SetActive(true);
                 break;
             case LostTorch:
-                cinematic.SetActive(false);
-                break;
-            case Pause:
+                cinematic.SetActive(true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);

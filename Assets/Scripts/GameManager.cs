@@ -1,14 +1,12 @@
 ﻿using System;
 using UnityEngine;
-using static CannibalsManager.CannibalsState;
 using static GameManager.GameState;
 using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
-    private GameState _gameState = Playing;
+    private GameState _gameState = Beginning;
     [HideInInspector] public EventGameState onGameStateChanged;
-    private bool _searchingOrFollowing = false;
 
 
     private void Start()
@@ -20,10 +18,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        if ((!Input.GetKey(KeyCode.Escape))) return;
-        if (!CannibalsManager.IsInitialized) return;
-        CannibalsManager.Instance.SetState(_searchingOrFollowing ? Searching : Following);
-        _searchingOrFollowing = !_searchingOrFollowing;
+        
     }
 
     public void SetGameState(GameState gameState)
@@ -31,6 +26,11 @@ public class GameManager : Singleton<GameManager>
         var oldGameState = _gameState;
         switch (_gameState = gameState)
         {
+            case Beginning:
+                break;
+            case Pause:
+                Time.timeScale = 0;
+                break;
             case Won:
                 Time.timeScale = 0;
                 break;
@@ -43,9 +43,6 @@ public class GameManager : Singleton<GameManager>
                 break;
             case Playing:
                 Time.timeScale = 1;
-                break;
-            case Pause:
-                Time.timeScale = 0;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(gameState), gameState, null);
@@ -77,6 +74,7 @@ public class GameManager : Singleton<GameManager>
         /// <summary>
         /// quand la partie est en pause
         /// </summary>
-        Pause
+        Pause,
+        Beginning
     }
 }
