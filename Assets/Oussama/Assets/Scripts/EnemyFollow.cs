@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using static CannibalsManager.CannibalsState;
-using static GameManager;
+using static GameManager.GameState;
 using Random = UnityEngine.Random;
 
 public class EnemyFollow : MonoBehaviour
@@ -71,7 +71,7 @@ public class EnemyFollow : MonoBehaviour
 
     private void Update()
     {
-        if (Time.timeScale==0)
+        if (GameManager.Instance.gameState != Playing)
             return;
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
@@ -84,18 +84,19 @@ public class EnemyFollow : MonoBehaviour
 
     public void SetDestination(Vector3 destination)
     {
-        if (Time.timeScale==0) return;
+        if (GameManager.Instance.gameState != Playing) return;
         _agent.SetDestination(destination);
     }
 
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized)
-            GameManager.Instance.SetGameState(GameState.LostCannibals);
+            GameManager.Instance.SetGameState(LostCannibals);
     }
 
     private void MoveToward(Vector3 targetPoint)
     {
+        if (GameManager.Instance.gameState != Playing) return;
         var rotation = Quaternion.LookRotation(targetPoint - transform.position);
         rotation.x = 0f;
         rotation.z = 0f;

@@ -20,7 +20,6 @@ public class UIManager : Singleton<UIManager>
 
     private void HandleGameStateChanged(GameState previous, GameState actual)
     {
-        print(actual);
         switch (actual)
         {
             case Beginning:

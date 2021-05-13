@@ -26,7 +26,7 @@ public class TorchScript : Singleton<TorchScript>
 
     private void Update()
     {
-        if (Time.timeScale == 0) return;
+        if (GameManager.Instance.gameState!=Playing) return;
         _random = Random.Range(0.0f, 150.0f);
         var noise = Mathf.PerlinNoise(_random * _percentageHealth, Time.time);
         _component.intensity = Mathf.Lerp(MINIntensity * _percentageHealth,

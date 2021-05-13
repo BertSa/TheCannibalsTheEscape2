@@ -17,8 +17,6 @@ public class MoveImage : MonoBehaviour
         if (!isMoving) return;
 
         transform.position += new Vector3(moveX, moveY);
-        print("1:"+ (transform.position.y > 300));
-        print("2:"+isFading);
         if (isFading || (transform.position.y > 300)) return;
         StartCoroutine(FadeImage(true));
         isFading = false;

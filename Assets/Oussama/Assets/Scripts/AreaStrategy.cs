@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using static CannibalsManager.CannibalsState;
+using static GameManager.GameState;
 
 public class AreaStrategy : Singleton<AreaStrategy>
 {
@@ -16,7 +17,7 @@ public class AreaStrategy : Singleton<AreaStrategy>
 
     private void Update()
     {
-        if (!CannibalsManager.IsInitialized || CannibalsManager.Instance.GetState() == Searching ||Time.timeScale==0)
+        if (!CannibalsManager.IsInitialized || CannibalsManager.Instance.GetState() == Searching ||GameManager.Instance.gameState!=Playing)
             return;
         
         var colliders = new Collider[100];
@@ -31,6 +32,7 @@ public class AreaStrategy : Singleton<AreaStrategy>
 
     private void OnTriggerEnter(Collider other)
     {
+        if (GameManager.Instance.gameState!=Playing) return;
         if (other.gameObject.CompareTag("Cannibal") && CannibalsManager.IsInitialized)
             CannibalsManager.Instance.SetState(Following);
     }

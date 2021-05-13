@@ -71,7 +71,8 @@ public class PlayerController : Singleton<PlayerController>
 
     private void Update()
     {
-        if (GameManager.Instance.gameState==Playing) return;
+        if (GameManager.Instance.gameState!=Playing) return;
+
         #region Camera
 
         _yaw += MouseSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime;
@@ -101,7 +102,7 @@ public class PlayerController : Singleton<PlayerController>
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance.gameState==Playing) return;
+        if (GameManager.Instance.gameState!=Playing) return;
         #region Movement
 
         var targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));

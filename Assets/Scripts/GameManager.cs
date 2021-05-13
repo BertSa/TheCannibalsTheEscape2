@@ -8,12 +8,17 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector]public GameState gameState = Beginning;
     [HideInInspector] public EventGameState onGameStateChanged;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        Time.timeScale = 0;
+    }
+
     private void Start()
     {
         var potentialExits = FindObjectsOfType<PotentialExit>();
         if (potentialExits.Length < 1) return;
         potentialExits[Random.Range(0, potentialExits.Length)].SetAsExit(true);
-        Time.timeScale = 0;
         SetGameState(Beginning);
     }
 

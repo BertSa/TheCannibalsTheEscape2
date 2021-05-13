@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using static CannibalsManager.CannibalsState;
+using static GameManager.GameState;
 using static SoundManager;
 
 public class CannibalsManager : Singleton<CannibalsManager>
@@ -22,11 +23,11 @@ public class CannibalsManager : Singleton<CannibalsManager>
 
     private void FollowTrace()
     {
-        if (state == Following || !AreaStrategy.IsInitialized)
+        if (state == Following || !AreaStrategy.IsInitialized || GameManager.Instance.gameState != Playing)
             return;
-        
+
         foreach (var cannibal in _cannibals)
-            cannibal.SetDestination(GetRandomPoint(_player.position,AreaStrategy.Instance.GetRadius()));
+            cannibal.SetDestination(GetRandomPoint(_player.position, AreaStrategy.Instance.GetRadius()));
     }
 
     private static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
@@ -40,13 +41,17 @@ public class CannibalsManager : Singleton<CannibalsManager>
 
     public void SetState(CannibalsState actual)
     {
+        if (GameManager.Instance.gameState != Playing) return;
+
+
         onAmbianceChanged.Invoke(state, actual);
         state = actual;
     }
 
     private void Update()
     {
-        if (Time.timeScale == 0 || state != Following) return;
+        if (GameManager.Instance.gameState != Playing) return;
+        if (state != Following) return;
         foreach (var cannibal in _cannibals)
         {
             cannibal.SetDestination(_player.position);
