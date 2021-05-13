@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using static CannibalsManager.CannibalsState;
 using static GameManager;
 using Random = UnityEngine.Random;
 
@@ -13,9 +12,8 @@ public class EnemyFollow : MonoBehaviour
     private const int DistanceToAttack = 4;
     private const int Acceleration = 1;
     private readonly int _attack = Animator.StringToHash("Attack");
-    private bool _alreadyNotified = false;
 
-    [SerializeField] private int speed = 7;
+    [SerializeField] private int speed = 3;
 
     private NavMeshAgent _agent;
     private Transform _player;
@@ -58,16 +56,13 @@ public class EnemyFollow : MonoBehaviour
 
     private void Start()
     {
-        if(CannibalsManager.IsInitialized)
-            CannibalsManager.Instance.destinationChangeEvent.AddListener(HandleDestinationChange);
-        
         _rb = GetComponent<Rigidbody>();
         _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
         _player = PlayerController.Instance.GetComponent<Transform>();
         _animator.SetBool(_attack, false);
 
-        _agent.acceleration = Acceleration;
+        // _agent.acceleration = Acceleration;
         _agent.speed = speed;
         _agent.autoRepath = true;
         _agent.destination = _player.position;
@@ -77,19 +72,12 @@ public class EnemyFollow : MonoBehaviour
 
     private void Update()
     {
-        var playerPosition = _player.position;
-
-        if(!_alreadyNotified)
-            SetDestination(playerPosition);
-        else
-            SetDestination(CannibalsManager.Instance.waypoints[Random.Range(0, CannibalsManager.Instance.waypoints.Count)]);
-
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
-        Play(isNearPlayer ? attack : follow);
+        Play(CannibalsManager.Instance.GetState() == Searching ? searching : isNearPlayer ? attack : follow);
 
         MoveToward(_agent.destination);
-        
+
         _animator.SetBool(_attack, isNearPlayer);
     }
 
@@ -104,20 +92,20 @@ public class EnemyFollow : MonoBehaviour
             GameManager.Instance.SetGameState(GameState.LostCannibals);
     }
 
-    private void MoveToward( Vector3 targetPoint)
+    private void MoveToward(Vector3 targetPoint)
     {
         var rotation = Quaternion.LookRotation(targetPoint - transform.position);
         rotation.x = 0f;
         rotation.z = 0f;
-        
+
         var t = transform;
-        
+
         t.rotation = Quaternion.Slerp(t.rotation, rotation, Time.deltaTime * _agent.angularSpeed);
-    
+
         var movementVelocity = t.forward * speed;
-    
+
         movementVelocity.y = -.1f;
-        
+
         _rb.velocity = movementVelocity;
     }
 
@@ -153,13 +141,7 @@ public class EnemyFollow : MonoBehaviour
 
         _activePlayer = nextPlayer;
     }
-    
-    private void HandleDestinationChange(Vector3 destination)
-    {
-        if(_agent.destination != destination && _alreadyNotified)
-            _agent.SetDestination(destination);
-        _alreadyNotified = true;
-    }
+
 
     private static IEnumerator FadeAudioSource(AudioSource player, float duration, float targetVolume,
         Action finishedCallback)
