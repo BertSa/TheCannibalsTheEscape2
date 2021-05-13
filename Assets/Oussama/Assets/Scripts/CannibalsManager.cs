@@ -24,13 +24,9 @@ public class CannibalsManager : Singleton<CannibalsManager>
     {
         if (state == Following || !AreaStrategy.IsInitialized)
             return;
+        
         foreach (var cannibal in _cannibals)
-        {
-            var finalPosition = GetRandomPoint(_player.position,AreaStrategy.Instance.GetRadius());
-            
-            cannibal.SetDestination(finalPosition);
-            print(finalPosition);
-        }
+            cannibal.SetDestination(GetRandomPoint(_player.position,AreaStrategy.Instance.GetRadius()));
     }
 
     private static Vector3 GetRandomPoint(Vector3 center, float maxDistance) {
@@ -41,10 +37,6 @@ public class CannibalsManager : Singleton<CannibalsManager>
         return hit.position;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="actual"></param>
     public void SetState(CannibalsState actual)
     {
         onAmbianceChanged.Invoke(state, actual);
