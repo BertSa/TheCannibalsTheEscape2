@@ -79,15 +79,23 @@ public class EnemyFollow : MonoBehaviour
     {
         var playerPosition = _player.position;
 
-        _agent.SetDestination(playerPosition);
+        if(!_alreadyNotified)
+            SetDestination(playerPosition);
+        else
+            SetDestination(CannibalsManager.Instance.waypoints[Random.Range(0, CannibalsManager.Instance.waypoints.Count)]);
 
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
         Play(isNearPlayer ? attack : follow);
-        
+
         MoveToward(_agent.destination);
         
         _animator.SetBool(_attack, isNearPlayer);
+    }
+
+    public void SetDestination(Vector3 destination)
+    {
+        _agent.SetDestination(destination);
     }
 
     private void OnCollisionEnter(Collision other)
@@ -146,7 +154,7 @@ public class EnemyFollow : MonoBehaviour
         _activePlayer = nextPlayer;
     }
     
-    private  void HandleDestinationChange(Vector3 destination)
+    private void HandleDestinationChange(Vector3 destination)
     {
         if(_agent.destination != destination && _alreadyNotified)
             _agent.SetDestination(destination);

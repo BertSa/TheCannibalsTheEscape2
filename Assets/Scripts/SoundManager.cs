@@ -83,7 +83,7 @@ public class SoundManager : Singleton<SoundManager>
         _audioSource.Play();
     }
 
-    private static Vector3 RandomCircle(Vector3 center, float radius)
+    public static Vector3 RandomCircle(Vector3 center, float radius)
     {
         const float minDistance = 3f;
         var ang = Random.value * 360;
