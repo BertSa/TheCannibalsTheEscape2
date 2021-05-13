@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static GameManager.GameState;
 
 public class Cinematic : MonoBehaviour
 {
@@ -17,5 +18,6 @@ public class Cinematic : MonoBehaviour
         images[index].gameObject.SetActive(false);
         index++;
         if (index < images.Length) images[index].Move();
+        else if (GameManager.IsInitialized) GameManager.Instance.SetGameState(Playing);
     }
 }

@@ -16,7 +16,7 @@ public class AreaStrategy : Singleton<AreaStrategy>
 
     private void Update()
     {
-        if (!CannibalsManager.IsInitialized || CannibalsManager.Instance.GetState() == Searching)
+        if (!CannibalsManager.IsInitialized || CannibalsManager.Instance.GetState() == Searching ||Time.timeScale==0)
             return;
         
         var colliders = new Collider[100];

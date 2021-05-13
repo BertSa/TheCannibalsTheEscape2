@@ -201,7 +201,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cf16864ab858bee9b1c75d33dc91386, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cinematic: {fileID: 6521003201203229299}
+  cinematicBeginning: {fileID: 6521003201203229299}
+  cinematicEndWin: {fileID: 0}
+  cinematicEndLostTorch: {fileID: 0}
+  cinematicEndLostCannibals: {fileID: 0}
   hud: {fileID: 2369893126814144296}
 --- !u!1 &2369893127402569111
 GameObject:
@@ -509,7 +512,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8819871081949060956
 RectTransform:
   m_ObjectHideFlags: 0

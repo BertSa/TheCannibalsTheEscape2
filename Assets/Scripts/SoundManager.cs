@@ -18,8 +18,10 @@ public class SoundManager : Singleton<SoundManager>
     {
         base.Awake();
         _audioSource = gameObject.AddComponent<AudioSource>();
+       
     }
 
+  
     private void Start()
     {
         // if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
@@ -33,19 +35,29 @@ public class SoundManager : Singleton<SoundManager>
     {
         switch (actual)
         {
+            case Beginning:
+                PauseGame();
+                break;
             case Playing:
+                Play();
+                break;
+            case Pause:
+                PauseGame();
                 break;
             case Won:
             case LostCannibals:
             case LostTorch:
                 EndGame();
                 break;
-            case Pause:
-                PauseGame();
-                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
         }
+    }
+
+    private void Play()
+    {
+        _findObjectsOfType = FindObjectsOfType<AudioSource>();
+        foreach (var audioSource in _findObjectsOfType) audioSource.Play();
     }
 
     private void HandleAmbianceChanged(CannibalsState previous, CannibalsState actual)

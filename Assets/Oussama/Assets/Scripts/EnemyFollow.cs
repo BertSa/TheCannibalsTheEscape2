@@ -65,13 +65,14 @@ public class EnemyFollow : MonoBehaviour
         // _agent.acceleration = Acceleration;
         _agent.speed = speed;
         _agent.autoRepath = true;
-        _agent.destination = _player.position;
+        // _agent.destination = _player.position;
         _agent.autoBraking = false;
-        Play(follow);
     }
 
     private void Update()
     {
+        if (Time.timeScale==0)
+            return;
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
         Play(CannibalsManager.Instance.GetState() == Searching ? searching : isNearPlayer ? attack : follow);
@@ -83,6 +84,7 @@ public class EnemyFollow : MonoBehaviour
 
     public void SetDestination(Vector3 destination)
     {
+        if (Time.timeScale==0) return;
         _agent.SetDestination(destination);
     }
 

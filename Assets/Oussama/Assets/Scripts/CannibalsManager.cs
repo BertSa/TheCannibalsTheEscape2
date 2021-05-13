@@ -29,8 +29,9 @@ public class CannibalsManager : Singleton<CannibalsManager>
             cannibal.SetDestination(GetRandomPoint(_player.position,AreaStrategy.Instance.GetRadius()));
     }
 
-    private static Vector3 GetRandomPoint(Vector3 center, float maxDistance) {
-        var randomPos = Random.insideUnitSphere * maxDistance + center;
+    private static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
+    {
+        Vector3 randomPos = Random.insideUnitSphere * maxDistance + center;
 
         NavMesh.SamplePosition(randomPos, out var hit, maxDistance, NavMesh.AllAreas);
 
@@ -45,7 +46,7 @@ public class CannibalsManager : Singleton<CannibalsManager>
 
     private void Update()
     {
-        if (state != Following) return;
+        if (Time.timeScale == 0 || state != Following) return;
         foreach (var cannibal in _cannibals)
         {
             cannibal.SetDestination(_player.position);
