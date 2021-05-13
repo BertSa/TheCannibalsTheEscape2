@@ -71,8 +71,9 @@ public class EnemyFollow : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.gameState != Playing)
+        if (!CannibalsManager.IsInitialized || GameManager.Instance.gameState != Playing)
             return;
+        
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
         Play(CannibalsManager.Instance.GetState() == Searching ? searching : isNearPlayer ? attack : follow);
