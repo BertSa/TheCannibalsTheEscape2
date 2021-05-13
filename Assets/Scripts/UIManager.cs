@@ -1,38 +1,45 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using static GameManager;
 using static GameManager.GameState;
 
 public class UIManager : Singleton<UIManager>
 {
-    [SerializeField] private GameObject cinematic;
+    [SerializeField] private GameObject cinematicBeginning;
+    [SerializeField] private GameObject cinematicEndWin;
+    [SerializeField] private GameObject cinematicEndLostTorch;
+    [SerializeField] private GameObject cinematicEndLostCannibals;
     [SerializeField] private GameObject hud;
 
     private void Start()
     {
         if (GameManager.IsInitialized) GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
+        HandleGameStateChanged(Beginning, Beginning);
     }
 
-    private void HandleGameStateChanged(GameManager.GameState previous, GameManager.GameState actual)
+    private void HandleGameStateChanged(GameState previous, GameState actual)
     {
+        print(actual);
         switch (actual)
         {
             case Beginning:
-                
+                cinematicBeginning.SetActive(true);
                 break;
             case Pause:
                 break;
             case Playing:
+                if (previous == Beginning) cinematicBeginning.SetActive(false);
                 hud.SetActive(true);
                 break;
             case Won:
-                cinematic.SetActive(true);
+                cinematicEndWin.SetActive(true);
                 break;
             case LostCannibals:
-                cinematic.SetActive(true);
+                cinematicEndLostCannibals.SetActive(true);
                 break;
             case LostTorch:
-                cinematic.SetActive(true);
+                cinematicEndLostTorch.SetActive(true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
@@ -41,6 +48,6 @@ public class UIManager : Singleton<UIManager>
 }
 
 [Serializable]
-public class EventGameState : UnityEvent<GameManager.GameState, GameManager.GameState>
+public class EventGameState : UnityEvent<GameState, GameState>
 {
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static GameManager.GameState;
 
 public class TorchScript : Singleton<TorchScript>
 {
@@ -25,7 +26,7 @@ public class TorchScript : Singleton<TorchScript>
 
     private void Update()
     {
-        if (Time.time == 0) return;
+        if (Time.timeScale == 0) return;
         _random = Random.Range(0.0f, 150.0f);
         var noise = Mathf.PerlinNoise(_random * _percentageHealth, Time.time);
         _component.intensity = Mathf.Lerp(MINIntensity * _percentageHealth,
@@ -43,6 +44,6 @@ public class TorchScript : Singleton<TorchScript>
 
         _percentageHealth = _torchHealth / MaxTorchHealth;
         if (_percentageHealth <= 0.01 && GameManager.IsInitialized)
-            GameManager.Instance.SetGameState(GameManager.GameState.Won);
+            GameManager.Instance.SetGameState(Won);
     }
 }

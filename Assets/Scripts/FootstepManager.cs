@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static GameManager.GameState;
 
 public class FootstepManager : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class FootstepManager : MonoBehaviour
 
     private void Update()
     {
-        if (!player.isSprinting && !player.isWalking && !audioSource.isPlaying) return;
+        if (!player.isSprinting && !player.isWalking && !audioSource.isPlaying||Time.timeScale==0) return;
         if (player.isSprinting)
         {
             if (audioSource.isPlaying && audioSource.clip == running)

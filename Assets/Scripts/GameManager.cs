@@ -5,29 +5,24 @@ using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
-    private GameState _gameState = Beginning;
+    [HideInInspector]public GameState gameState = Beginning;
     [HideInInspector] public EventGameState onGameStateChanged;
-
 
     private void Start()
     {
         var potentialExits = FindObjectsOfType<PotentialExit>();
         if (potentialExits.Length < 1) return;
         potentialExits[Random.Range(0, potentialExits.Length)].SetAsExit(true);
-    }
-
-    private void Update()
-    {
-        
+        Time.timeScale = 0;
+        SetGameState(Beginning);
     }
 
     public void SetGameState(GameState gameState)
     {
-        var oldGameState = _gameState;
-        switch (_gameState = gameState)
+        var oldGameState = this.gameState;
+        switch (this.gameState = gameState)
         {
             case Beginning:
-                break;
             case Pause:
                 Time.timeScale = 0;
                 break;
@@ -36,7 +31,6 @@ public class GameManager : Singleton<GameManager>
                 break;
             case LostTorch:
                 Time.timeScale = 0;
-                if (SoundManager.IsInitialized) SoundManager.Instance.EndGame();
                 break;
             case LostCannibals:
                 Time.timeScale = 0;
@@ -48,7 +42,7 @@ public class GameManager : Singleton<GameManager>
                 throw new ArgumentOutOfRangeException(nameof(gameState), gameState, null);
         }
 
-        onGameStateChanged.Invoke(oldGameState, _gameState);
+        onGameStateChanged.Invoke(oldGameState, this.gameState);
     }
 
 
