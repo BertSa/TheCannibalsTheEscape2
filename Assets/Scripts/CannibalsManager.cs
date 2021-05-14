@@ -45,8 +45,6 @@ public class CannibalsManager : Singleton<CannibalsManager>
 
     public void SetState(CannibalsState actual)
     {
-        if (GameManager.Instance.gameState != GameManager.GameState.Playing) return;
-
         onAmbianceChanged.Invoke(state, actual);
         state = actual;
     }

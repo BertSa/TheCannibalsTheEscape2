@@ -335,6 +335,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7089403277613926244, guid: f40724f45c8f709589343e9e22ab33ce,
+        type: 3}
+      propertyPath: pauseClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5cecf4565a9f4df449b0f3021d5c00f3, type: 3}
     - target: {fileID: 7089403277976744533, guid: f40724f45c8f709589343e9e22ab33ce,
         type: 3}
       propertyPath: m_Name

@@ -34,8 +34,13 @@ public class GameManager : Singleton<GameManager>
 
     public void SetGameState(GameState actual)
     {
+        
+
         var oldGameState = gameState;
         gameState = actual;
+        
+        if (oldGameState == Beginning && actual == Playing)
+            CannibalsManager.Instance.SetState(CannibalsManager.CannibalsState.Following);
         
         Time.timeScale = gameState == Playing ? 1 : 0;
 

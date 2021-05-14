@@ -12,10 +12,13 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private AudioClip lostTorch;
     [SerializeField] private AudioClip win;
 
+    [SerializeField] private AudioClip pauseClip;
+
     [SerializeField] private AudioClip[] ambianceSearchingClip;
     [SerializeField] private AudioClip[] ambianceFollowingClip;
 
     private AudioSource _audioSource;
+    private AudioSource _pauseAudioSource;
 
     private AudioSource[] _findObjectsOfType;
     private Transform _player;
@@ -24,7 +27,10 @@ public class SoundManager : Singleton<SoundManager>
     {
         base.Awake();
         _audioSource = gameObject.AddComponent<AudioSource>();
+        _pauseAudioSource = gameObject.AddComponent<AudioSource>();
         _audioSource.loop = false;
+        _pauseAudioSource.loop = true;
+        _pauseAudioSource.clip = pauseClip;
     }
 
     private void Start()
@@ -54,8 +60,11 @@ public class SoundManager : Singleton<SoundManager>
         switch (actual)
         {
             case Beginning:
+                PauseGame();
+                break;
             case Pause:
                 PauseGame();
+                _pauseAudioSource.Play();
                 break;
             case Playing:
                 Play();
@@ -78,6 +87,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         _findObjectsOfType = FindObjectsOfType<AudioSource>();
         foreach (var audioSource in _findObjectsOfType) audioSource.Play();
+        _pauseAudioSource.Stop();
     }
 
     private void HandleAmbianceChanged(CannibalsState previous, CannibalsState actual)
