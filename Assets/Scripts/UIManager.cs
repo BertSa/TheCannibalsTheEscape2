@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using static GameManager;
 using static GameManager.GameState;
 
@@ -56,12 +57,10 @@ public class UIManager : Singleton<UIManager>
         
         if (cinematic.Equals(cinematicBeginning))
             GameManager.Instance.SetGameState(Playing);
-        else if (cinematic.Equals(cinematicEndWin))
-            GameManager.Instance.SetGameState(Won);
-        else if (cinematic.Equals(cinematicEndLostCannibals))
-            GameManager.Instance.SetGameState(LostCannibals);
-        else if (cinematic.Equals(cinematicEndLostTorch))
-            GameManager.Instance.SetGameState(LostTorch);
+        else if (cinematic.Equals(cinematicEndWin) || 
+                 cinematic.Equals(cinematicEndLostCannibals) || 
+                 cinematic.Equals(cinematicEndLostTorch))
+            SceneManager.LoadScene("BootMenu");
     }
 }
 

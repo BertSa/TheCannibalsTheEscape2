@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using static CannibalsManager;
 using static CannibalsManager.CannibalsState;
 using static GameManager.GameState;
