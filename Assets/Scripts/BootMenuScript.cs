@@ -23,6 +23,6 @@ public class BootMenuScript : MonoBehaviour
 
     protected virtual void StartApplication()
     {
-        SceneManager.LoadScene("Oussama");
+        SceneManager.LoadScene("Game");
     }
 }
