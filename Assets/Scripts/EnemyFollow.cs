@@ -91,7 +91,6 @@ public class EnemyFollow : MonoBehaviour
     {
         if (!other.gameObject.CompareTag("Player") || !GameManager.IsInitialized) return;
         GameManager.Instance.SetGameState(GameManager.GameState.LostCannibals);
-        print("Lost to the cannibals");
     }
 
     private void MoveToward(Vector3 targetPoint)
