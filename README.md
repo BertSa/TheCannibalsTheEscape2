@@ -4,6 +4,9 @@
 Bienvenue joueur,
 ici vous retrouvez les explications pour le jeu **The Cannibals : The Escape 2**.
 
+## Attention
+La scène de départ est le BootMenu.unity de là elle vous guidera. 
+
 ## Definition
 
 Il faut que vous trouviez une sortie tout en ne vous faisant pas manger cru par les cannibales.
