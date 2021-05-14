@@ -1,30 +1,15 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
+﻿
+using UnityEngine.SceneManagement;
 
-public class PauseMenuScript : MonoBehaviour
+public class PauseMenuScript : BootMenuScript
 {
-    [SerializeField] private Button start;
-    [SerializeField] private Button quit;
-    
-    public void StartApplication()
+    protected override void StartApplication()
     {
-        Debug.Log(nameof(StartApplication));
         GameManager.Instance.SetGameState(GameManager.GameState.Playing);
     }
-    
-    private void Start()
-    {
-        start.onClick = new Button.ButtonClickedEvent();
-        quit.onClick = new Button.ButtonClickedEvent();
-    
-        start.onClick.AddListener(StartApplication);
-        quit.onClick.AddListener(QuitApplication);
-    }
 
-    public void QuitApplication()
+    protected override void QuitApplication()
     {
-        Application.Quit();
+        SceneManager.LoadScene("BootMenu");
     }
-
 }

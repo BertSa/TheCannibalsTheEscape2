@@ -10829,16 +10829,20 @@ PrefabInstance:
       value: Tile_01_Straight_LODGroup (2)
       objectReference: {fileID: 0}
     - target: {fileID: 4040461229590474, guid: ed45f79f0193b6c42b0151e5c714fd2e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4040461229590474, guid: ed45f79f0193b6c42b0151e5c714fd2e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4040461229590474, guid: ed45f79f0193b6c42b0151e5c714fd2e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.41
       objectReference: {fileID: 0}
     - target: {fileID: 4040461229590474, guid: ed45f79f0193b6c42b0151e5c714fd2e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.89
       objectReference: {fileID: 0}
     - target: {fileID: 4040461229590474, guid: ed45f79f0193b6c42b0151e5c714fd2e, type: 3}
       propertyPath: m_LocalRotation.y

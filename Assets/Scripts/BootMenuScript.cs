@@ -16,7 +16,7 @@ public class BootMenuScript : MonoBehaviour
         quit.onClick.AddListener(QuitApplication);
     }
 
-    private static void QuitApplication()
+    protected virtual void QuitApplication()
     {
         Application.Quit();
     }
