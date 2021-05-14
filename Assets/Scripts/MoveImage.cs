@@ -11,18 +11,18 @@ public class MoveImage : MonoBehaviour
     [SerializeField] private bool isFixed;
 
     private const float FadeTime = 5;
-    private readonly YieldInstruction fadeInstruction = new YieldInstruction();
-    private bool isActivated;
-    private float targetAlpha;
-    private Fade fade;
+    private readonly YieldInstruction _fadeInstruction = new YieldInstruction();
+    private bool _isActivated;
+    private float _targetAlpha;
+    private Fade _fade;
 
     private void Update()
     {
-        if (!isActivated || isFixed) return;
+        if (!_isActivated || isFixed) return;
 
         transform.position += new Vector3(moveX, moveY);
         if (transform.position.y > 300) return;
-        if (fade == Fade.FadeOut) StartCoroutine(FadeOut());
+        if (_fade == Fade.FadeOut) StartCoroutine(FadeOut());
         isFixed = true;
     }
 
@@ -35,7 +35,7 @@ public class MoveImage : MonoBehaviour
             elapsedTime += Time.unscaledDeltaTime;
             c.a = 1.0f - Mathf.Clamp01(elapsedTime / FadeTime);
             mImg.color = c;
-            yield return fadeInstruction;
+            yield return _fadeInstruction;
         }
 
         NextSlide();
@@ -51,7 +51,7 @@ public class MoveImage : MonoBehaviour
             elapsedTime += Time.unscaledDeltaTime;
             c.a = Mathf.Clamp01(elapsedTime / FadeTime);
             mImg.color = c;
-            yield return fadeInstruction;
+            yield return _fadeInstruction;
         }
 
         StartCoroutine(nameof(NextSlide), 2f);
@@ -59,9 +59,9 @@ public class MoveImage : MonoBehaviour
 
     public void Activate(Fade fadeNew)
     {
-        isActivated = true;
-        fade = fadeNew;
-        if (fade == Fade.FadeIn) StartCoroutine(FadeIn());
+        _isActivated = true;
+        _fade = fadeNew;
+        if (_fade == Fade.FadeIn) StartCoroutine(FadeIn());
     }
 
     private void NextSlide()

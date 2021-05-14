@@ -31,16 +31,16 @@ public class TorchScript : Singleton<TorchScript>
         var noise = Mathf.PerlinNoise(_random * _percentageHealth, Time.time);
         _component.intensity = Mathf.Lerp(MINIntensity * _percentageHealth,
             MAXIntensity * _percentageHealth, noise);
-        fireParticle.transform.transform.localScale = Vector3.one * (DefaultScale * _percentageHealth);
+        fireParticle.transform.localScale = Vector3.one * (DefaultScale * _percentageHealth);
     }
 
 
     public void SetRange(bool isRunning)
     {
         if (isRunning)
-            _torchHealth -= 1 * Time.deltaTime;
+            _torchHealth -= Time.deltaTime;
         else
-            _torchHealth = Mathf.Clamp(_torchHealth += 1 * Time.deltaTime, 0, MaxTorchHealth);
+            _torchHealth = Mathf.Clamp(_torchHealth += Time.deltaTime, 0, MaxTorchHealth);
 
         _percentageHealth = _torchHealth / MaxTorchHealth;
         if (_percentageHealth <= 0.01 && GameManager.IsInitialized)

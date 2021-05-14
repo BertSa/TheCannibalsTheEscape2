@@ -4,7 +4,6 @@ using UnityEngine.Events;
 using static CannibalsManager;
 using static CannibalsManager.CannibalsState;
 using static GameManager.GameState;
-using Random = UnityEngine.Random;
 
 public class SoundManager : Singleton<SoundManager>
 {
@@ -12,6 +11,10 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private AudioClip lostCannibals; 
     [SerializeField] private AudioClip lostTorch;
     [SerializeField] private AudioClip win;
+    
+    [SerializeField] private AudioClip ambianceSearchingClip;
+    [SerializeField] private AudioClip ambianceFollowingClip;
+        
     private AudioSource _audioSource;
 
     private AudioSource[] _findObjectsOfType;
@@ -21,9 +24,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         base.Awake();
         _audioSource = gameObject.AddComponent<AudioSource>();
-       
     }
-
   
     private void Start()
     {
@@ -39,13 +40,11 @@ public class SoundManager : Singleton<SoundManager>
         switch (actual)
         {
             case Beginning:
+            case Pause:
                 PauseGame();
                 break;
             case Playing:
                 Play();
-                break;
-            case Pause:
-                PauseGame();
                 break;
             case Won:
                 EndGame(win);
@@ -69,23 +68,20 @@ public class SoundManager : Singleton<SoundManager>
 
     private void HandleAmbianceChanged(CannibalsState previous, CannibalsState actual)
     {
-        if (previous == Searching && actual == Following)
+        switch (actual)
         {
-            // _audioSource.clip = ;
-            // _audioSource.Play();
-        }
-        else if (actual == Searching)
-        {
-        }
-        else if (actual == Following)
-        {
-        }
-        else
-        {
-            throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
+            case Searching:
+                _audioSource.clip = ambianceSearchingClip;
+                _audioSource.Play();
+                break;
+            case Following:
+                _audioSource.clip = ambianceFollowingClip;
+                _audioSource.Play();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
         }
     }
-
 
     // ReSharper disable once MemberCanBePrivate.Global
     // ReSharper disable Unity.PerformanceAnalysis
@@ -100,17 +96,6 @@ public class SoundManager : Singleton<SoundManager>
         PauseGame();
         _audioSource.clip = clip;
         _audioSource.Play();
-    }
-
-    public static Vector3 RandomCircle(Vector3 center, float radius)
-    {
-        const float minDistance = 3f;
-        var ang = Random.value * 360;
-        var pos = center;
-        pos.x += minDistance + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
-        pos.y += Random.Range(0, 7);
-        pos.z += minDistance + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
-        return pos;
     }
 
     [Serializable]

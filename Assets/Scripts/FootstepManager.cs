@@ -9,25 +9,25 @@ public class FootstepManager : MonoBehaviour
     [Header("Clips")] [SerializeField] private AudioClip running;
 
     [SerializeField] private AudioClip walking;
-    private PlayerController player;
+    private PlayerController _player;
 
     private void Start()
     {
-        if (PlayerController.IsInitialized) player = PlayerController.Instance;
+        if (PlayerController.IsInitialized) _player = PlayerController.Instance;
     }
 
     private void Update()
     {
-        if (!player.isSprinting && !player.isWalking && !audioSource.isPlaying ||
+        if (!_player.isSprinting && !_player.isWalking && !audioSource.isPlaying ||
             GameManager.Instance.gameState != Playing) return;
-        if (player.isSprinting)
+        if (_player.isSprinting)
         {
             if (audioSource.isPlaying && audioSource.clip == running)
                 return;
             audioSource.clip = running;
             audioSource.Play();
         }
-        else if (player.isWalking)
+        else if (_player.isWalking)
         {
             if (audioSource.isPlaying && audioSource.clip == walking)
                 return;

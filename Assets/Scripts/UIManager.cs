@@ -47,13 +47,16 @@ public class UIManager : Singleton<UIManager>
 
     public void CinematicFinished(Cinematic cinematic)
     {
+        if (!GameManager.IsInitialized) return;
+        
         if (cinematic.Equals(cinematicBeginning))
-        {
-            if (GameManager.IsInitialized) GameManager.Instance.SetGameState(Playing);
-        }else if (cinematic.Equals(cinematicEndWin))
-        {
-            
-        }
+            GameManager.Instance.SetGameState(Playing);
+        else if (cinematic.Equals(cinematicEndWin))
+            GameManager.Instance.SetGameState(Won);
+        else if (cinematic.Equals(cinematicEndLostCannibals))
+            GameManager.Instance.SetGameState(LostCannibals);
+        else if (cinematic.Equals(cinematicEndLostTorch))
+            GameManager.Instance.SetGameState(LostTorch);
     }
 }
 

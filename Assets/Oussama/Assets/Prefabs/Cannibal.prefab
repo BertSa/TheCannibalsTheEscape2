@@ -2645,14 +2645,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  attack:
+  attackSounds:
   - {fileID: 8300000, guid: dba8e47aaf0ff6dd29c9319a62827805, type: 3}
   - {fileID: 8300000, guid: e3495841b971fafb88fccdaa607263ba, type: 3}
-  follow:
+  followingSounds:
   - {fileID: 8300000, guid: 2d5e937d1f66c4785b18bececf86034f, type: 3}
   - {fileID: 8300000, guid: 9eb5f438a53850124aa71c41286ae6d7, type: 3}
   - {fileID: 8300000, guid: 5da27048c567519808d2a1697f3d84e9, type: 3}
-  searching:
+  searchingSounds:
   - {fileID: 8300000, guid: b348a28784bfe0db293c71ab43439f54, type: 3}
   - {fileID: 8300000, guid: 96314a327d621210e997416408dcb1e9, type: 3}
   - {fileID: 8300000, guid: 17ab72d9c9028359ca167007125d0303, type: 3}

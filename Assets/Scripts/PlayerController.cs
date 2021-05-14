@@ -106,21 +106,15 @@ public class PlayerController : Singleton<PlayerController>
 
         var targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         isWalking = targetVelocity.x != 0 || targetVelocity.z != 0 && _isGrounded;
-
+        Vector3 velocityChange;
         if (targetVelocity.z > 0 && Input.GetKey(SprintKey))
         {
             targetVelocity = transform.TransformDirection(targetVelocity) * (SprintSpeed * Time.deltaTime);
 
-            var velocity = _rb.velocity;
-            var velocityChange = targetVelocity - velocity;
-            velocityChange.x = Mathf.Clamp(velocityChange.x, -MAXVelocityChange, MAXVelocityChange);
-            velocityChange.z = Mathf.Clamp(velocityChange.z, -MAXVelocityChange, MAXVelocityChange);
-            velocityChange.y = 0;
+            velocityChange = GetVelocityChange(targetVelocity - _rb.velocity);
 
             if (isWalking && velocityChange.x != 0 || velocityChange.z != 0)
                 isSprinting = true;
-
-            _rb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
         else
         {
@@ -128,16 +122,19 @@ public class PlayerController : Singleton<PlayerController>
 
             targetVelocity = transform.TransformDirection(targetVelocity) * (WalkSpeed * Time.deltaTime);
 
-            var velocity = _rb.velocity;
-            var velocityChange = targetVelocity - velocity;
-            velocityChange.x = Mathf.Clamp(velocityChange.x, -MAXVelocityChange, MAXVelocityChange);
-            velocityChange.z = Mathf.Clamp(velocityChange.z, -MAXVelocityChange, MAXVelocityChange);
-            velocityChange.y = 0;
-
-            _rb.AddForce(velocityChange, ForceMode.VelocityChange);
+            velocityChange = GetVelocityChange(targetVelocity - _rb.velocity);
         }
+        _rb.AddForce(velocityChange, ForceMode.VelocityChange);
 
         #endregion
+    }
+
+    private Vector3 GetVelocityChange(Vector3 vChange)
+    {
+        vChange.x = Mathf.Clamp(vChange.x, -MAXVelocityChange, MAXVelocityChange);
+        vChange.z = Mathf.Clamp(vChange.z, -MAXVelocityChange, MAXVelocityChange);
+        vChange.y = 0;
+        return vChange;
     }
 
     private void CheckGround()

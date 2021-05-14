@@ -25,27 +25,9 @@ public class GameManager : Singleton<GameManager>
     public void SetGameState(GameState actual)
     {
         var oldGameState = gameState;
-        switch (gameState = actual)
-        {
-            case Beginning:
-            case Pause:
-                Time.timeScale = 0;
-                break;
-            case Won:
-                Time.timeScale = 0;
-                break;
-            case LostTorch:
-                Time.timeScale = 0;
-                break;
-            case LostCannibals:
-                Time.timeScale = 0;
-                break;
-            case Playing:
-                Time.timeScale = 1;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
-        }
+        gameState = actual;
+        
+        Time.timeScale = gameState == Playing ? 1f : 0f;
 
         onGameStateChanged.Invoke(oldGameState, gameState);
     }

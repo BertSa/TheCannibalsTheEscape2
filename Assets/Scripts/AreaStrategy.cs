@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static CannibalsManager.CannibalsState;
-using static GameManager.GameState;
 
 public class AreaStrategy : Singleton<AreaStrategy>
 {
@@ -17,24 +15,28 @@ public class AreaStrategy : Singleton<AreaStrategy>
 
     private void Update()
     {
-        if (!CannibalsManager.IsInitialized || CannibalsManager.Instance.GetState() == Searching ||GameManager.Instance.gameState!=Playing)
+        if (!CannibalsManager.IsInitialized || CannibalsManager.Instance.GetState() == CannibalsManager.CannibalsState.Searching ||GameManager.Instance.gameState!=GameManager.GameState.Playing)
             return;
         
-        var colliders = new Collider[100];
+        var colliders = new Collider[30];
         var positions = new List<Vector3>();
 
         if (Physics.OverlapSphereNonAlloc(_player.position, GetRadius(), colliders) > 0)
             positions.AddRange(from c in colliders where c != null && c.CompareTag("Cannibal") select c.transform.position);
 
-        if (positions.Count == 0)
-            CannibalsManager.Instance.SetState(Searching);
+        CannibalsManager.Instance.SetState(positions.Count == 0
+            ? CannibalsManager.CannibalsState.Searching
+            : CannibalsManager.CannibalsState.Following);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (GameManager.Instance.gameState!=Playing) return;
+        if (!GameManager.IsInitialized || !CannibalsManager.IsInitialized) return;
+        
+        if (GameManager.Instance.gameState!=GameManager.GameState.Playing) return;
+        
         if (other.gameObject.CompareTag("Cannibal") && CannibalsManager.IsInitialized)
-            CannibalsManager.Instance.SetState(Following);
+            CannibalsManager.Instance.SetState(CannibalsManager.CannibalsState.Following);
     }
 
     public float GetRadius()

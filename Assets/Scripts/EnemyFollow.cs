@@ -3,27 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static CannibalsManager.CannibalsState;
-using static GameManager.GameState;
 using Random = UnityEngine.Random;
 
 public class EnemyFollow : MonoBehaviour
 {
+    #region Movement
+    
     private const int DistanceToAttack = 4;
     private readonly int _attack = Animator.StringToHash("Attack");
-
     [SerializeField] private int speed = 3;
-
     private NavMeshAgent _agent;
     private Transform _player;
     private Animator _animator;
     private Rigidbody _rb;
-
+    
+    #endregion
+    
     #region Audio
 
-    [Header("Clips")] [SerializeField] private AudioClip[] attack;
-    [SerializeField] private AudioClip[] follow;
-    [SerializeField] private AudioClip[] searching;
+    [Header("Clips")] [SerializeField] private AudioClip[] attackSounds;
+    [SerializeField] private AudioClip[] followingSounds;
+    [SerializeField] private AudioClip[] searchingSounds;
 
     private readonly IEnumerator[] _fader = new IEnumerator[2];
 
@@ -56,24 +56,25 @@ public class EnemyFollow : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _agent = GetComponent<NavMeshAgent>();
+
         _animator = GetComponent<Animator>();
         _player = PlayerController.Instance.GetComponent<Transform>();
         _animator.SetBool(_attack, false);
 
+        _agent = GetComponent<NavMeshAgent>();        
         _agent.speed = speed;
         _agent.autoRepath = true;
-        _agent.autoBraking = false;
+        _agent.autoBraking = true;
     }
 
     private void Update()
     {
-        if (!CannibalsManager.IsInitialized || GameManager.Instance.gameState != Playing)
+        if (!CannibalsManager.IsInitialized || !GameManager.IsInitialized || GameManager.Instance.gameState != GameManager.GameState.Playing)
             return;
         
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
-        Play(CannibalsManager.Instance.GetState() == Searching ? searching : isNearPlayer ? attack : follow);
+        Play(CannibalsManager.Instance.GetState() == CannibalsManager.CannibalsState.Searching ? searchingSounds : isNearPlayer ? attackSounds : followingSounds);
 
         MoveToward(_agent.destination);
 
@@ -82,19 +83,20 @@ public class EnemyFollow : MonoBehaviour
 
     public void SetDestination(Vector3 destination)
     {
-        if (GameManager.Instance.gameState != Playing) return;
+        if (GameManager.Instance.gameState != GameManager.GameState.Playing) return;
         _agent.SetDestination(destination);
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Player") && GameManager.IsInitialized)
-            GameManager.Instance.SetGameState(LostCannibals);
+        if (!other.gameObject.CompareTag("Player") || !GameManager.IsInitialized) return;
+        GameManager.Instance.SetGameState(GameManager.GameState.LostCannibals);
+        print("Lost to the cannibals");
     }
 
     private void MoveToward(Vector3 targetPoint)
     {
-        if (GameManager.Instance.gameState != Playing) return;
+        if (GameManager.Instance.gameState != GameManager.GameState.Playing) return;
         var rotation = Quaternion.LookRotation(targetPoint - transform.position);
         rotation.x = 0f;
         rotation.z = 0f;
@@ -121,7 +123,7 @@ public class EnemyFollow : MonoBehaviour
     private void Play(IReadOnlyList<AudioClip> clips)
     {
         var clip = clips[Random.Range(0, clips.Count)];
-        if (clips == follow && _clipPlaying[_activePlayer].isPlaying || clip == _clipPlaying[_activePlayer].clip)
+        if (clips == followingSounds && _clipPlaying[_activePlayer].isPlaying || clip == _clipPlaying[_activePlayer].clip)
             return;
 
         foreach (var enumerator in _fader)
