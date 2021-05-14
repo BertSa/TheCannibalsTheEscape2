@@ -3,11 +3,11 @@ using UnityEngine.AI;
 
 public class CannibalsManager : Singleton<CannibalsManager>
 {
-    private EnemyFollow[] _cannibals;
-    [SerializeField] private CannibalsState state = CannibalsState.Following;
     [HideInInspector] public SoundManager.EventAmbiance onAmbianceChanged;
+    
+    [SerializeField] private CannibalsState state = CannibalsState.Following;
 
-    private bool _alreadySetDestination;
+    private EnemyFollow[] _cannibals;
     private Transform _player;
 
     private void Start()
@@ -26,14 +26,7 @@ public class CannibalsManager : Singleton<CannibalsManager>
         foreach (var cannibal in _cannibals)
             cannibal.SetDestination(GetRandomPoint(_player.position, AreaStrategy.Instance.GetRadius()));
     }
-
     
-    /// <summary>
-    /// Gets a random point within maxdistance radius of a position in NavMeshSurface
-    /// </summary>
-    /// <param name="center">center of position</param>
-    /// <param name="maxDistance">max distance for a random position</param>
-    /// <returns>a random point within the NavMeshSurface </returns>
     public static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
     {
         var randomPos = Random.insideUnitSphere * maxDistance + center;
@@ -51,23 +44,12 @@ public class CannibalsManager : Singleton<CannibalsManager>
 
     private void Update()
     {
-        if (GameManager.Instance.gameState != GameManager.GameState.Playing) return;
-        if (state != CannibalsState.Following) return;
-        foreach (var cannibal in _cannibals)
-            cannibal.SetDestination(_player.position);
     }
 
     public enum CannibalsState
     {
-        /// <summary>
-        /// when cannibals are following the player
-        /// </summary>
         Following,
-
-        /// <summary>
-        /// when cannibals are searching the player
-        /// </summary>
-        Searching,
+        Searching
     }
 
     public CannibalsState GetState()

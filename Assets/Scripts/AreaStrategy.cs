@@ -31,9 +31,9 @@ public class AreaStrategy : Singleton<AreaStrategy>
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!GameManager.IsInitialized || !CannibalsManager.IsInitialized) return;
-        
-        if (GameManager.Instance.gameState!=GameManager.GameState.Playing) return;
+        if (!GameManager.IsInitialized || 
+            !CannibalsManager.IsInitialized || 
+            GameManager.Instance.gameState != GameManager.GameState.Playing ) return;
         
         if (other.gameObject.CompareTag("Cannibal") && CannibalsManager.IsInitialized)
             CannibalsManager.Instance.SetState(CannibalsManager.CannibalsState.Following);

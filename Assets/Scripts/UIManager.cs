@@ -6,12 +6,12 @@ using static GameManager.GameState;
 
 public class UIManager : Singleton<UIManager>
 {
-    [SerializeField] private Cinematic cinematicBeginning;
-    [SerializeField] private Cinematic cinematicEndWin;
-    [SerializeField] private Cinematic cinematicEndLostTorch;
-    [SerializeField] private Cinematic cinematicEndLostCannibals;
+    [SerializeField] private Cinematic cinematicBeginning, 
+        cinematicEndWin, 
+        cinematicEndLostTorch, 
+        cinematicEndLostCannibals;
+    
     [SerializeField] private GameObject hud;
-
     [SerializeField] private GameObject pauseMenu;
 
     private void Start()

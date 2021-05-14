@@ -114,12 +114,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 356010553112427495, guid: 2d74340c7330ae641b72b3fede0c5c9f,
         type: 3}
-      propertyPath: m_Icon
-      value: 
-      objectReference: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000,
-        type: 0}
-    - target: {fileID: 356010553112427495, guid: 2d74340c7330ae641b72b3fede0c5c9f,
-        type: 3}
       propertyPath: m_Name
       value: CannibalManager
       objectReference: {fileID: 0}
@@ -213,15 +207,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7089403277976744539}
     m_Modifications:
-    - target: {fileID: 686533474, guid: f80567a447d0a757ea8743cb1e258ba2, type: 3}
-      propertyPath: pauseMenu
-      value: 
-      objectReference: {fileID: 8435893579149253863}
-    - target: {fileID: 1689076616022981146, guid: f80567a447d0a757ea8743cb1e258ba2,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2369893127249823717, guid: f80567a447d0a757ea8743cb1e258ba2,
         type: 3}
       propertyPath: m_Name
@@ -287,12 +272,6 @@ PrefabInstance:
 --- !u!4 &4792132946106179870 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2369893127249823719, guid: f80567a447d0a757ea8743cb1e258ba2,
-    type: 3}
-  m_PrefabInstance: {fileID: 7089403278228154105}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8435893579149253863 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1689076616022981150, guid: f80567a447d0a757ea8743cb1e258ba2,
     type: 3}
   m_PrefabInstance: {fileID: 7089403278228154105}
   m_PrefabAsset: {fileID: 0}

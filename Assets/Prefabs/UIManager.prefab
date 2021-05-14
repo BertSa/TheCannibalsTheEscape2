@@ -545,7 +545,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -50.4}
-  m_SizeDelta: {x: 241.90002, y: 67.40982}
+  m_SizeDelta: {x: 400, y: 67.40982}
   m_Pivot: {x: 0.49999997, y: 0.4999999}
 --- !u!222 &1689076616363669188
 CanvasRenderer:
@@ -737,7 +737,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 220}
+  m_SizeDelta: {x: 450, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1640070286986084911
 MonoBehaviour:
@@ -787,7 +787,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0000076293945, y: 0.00021743774}
+  m_AnchoredPosition: {x: 0.000015258789, y: 0.00021743774}
   m_SizeDelta: {x: -0.099975586, y: -0.5906372}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1689076617007957748
@@ -1189,7 +1189,7 @@ MonoBehaviour:
   cinematicEndLostTorch: {fileID: 425807843482200700}
   cinematicEndLostCannibals: {fileID: 1453701116212674917}
   hud: {fileID: 2369893126814144296}
-  pauseMenu: {fileID: 0}
+  pauseMenu: {fileID: 1689076616022981150}
 --- !u!1 &2369893127402569111
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,9 +20,7 @@ public class Cinematic : MonoBehaviour
     private void Update()
     {
         if (Input.GetKey(KeyCode.Space))
-        {
             UIManager.Instance.CinematicFinished(this);
-        }
     }
 
     public void NextSlide()

@@ -11,16 +11,16 @@ public class TorchScript : Singleton<TorchScript>
     [SerializeField] private Light fireLight;
     [SerializeField] private ParticleSystem fireParticle;
 
-    private Light _component;
+    private Light _light;
+    
     private float _percentageHealth;
     private float _random;
 
     private float _torchHealth;
 
-
     private void Start()
     {
-        _component = fireLight.GetComponent<Light>();
+        _light = fireLight.GetComponent<Light>();
         _torchHealth = MaxTorchHealth;
     }
 
@@ -29,8 +29,7 @@ public class TorchScript : Singleton<TorchScript>
         if (GameManager.Instance.gameState != Playing) return;
         _random = Random.Range(0.0f, 150.0f);
         var noise = Mathf.PerlinNoise(_random * _percentageHealth, Time.time);
-        _component.intensity = Mathf.Lerp(MINIntensity * _percentageHealth,
-            MAXIntensity * _percentageHealth, noise);
+        _light.intensity = Mathf.Lerp(MINIntensity * _percentageHealth, MAXIntensity * _percentageHealth, noise);
         fireParticle.transform.localScale = Vector3.one * (DefaultScale * _percentageHealth);
     }
 

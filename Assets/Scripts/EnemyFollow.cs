@@ -24,6 +24,7 @@ public class EnemyFollow : MonoBehaviour
     [Header("Clips")] [SerializeField] private AudioClip[] attackSounds;
     [SerializeField] private AudioClip[] followingSounds;
     [SerializeField] private AudioClip[] searchingSounds;
+    private AudioSource[] _clipsPlaying;
 
     private readonly IEnumerator[] _fader = new IEnumerator[2];
 
@@ -32,19 +33,18 @@ public class EnemyFollow : MonoBehaviour
     private const int VolumeChangesPerSecond = 15;
     private const float FadeDuration = 1.0f;
     private const float Volume = 0.5f;
-    private AudioSource[] _clipPlaying;
 
     #endregion
 
     private void Awake()
     {
-        _clipPlaying = new[]
+        _clipsPlaying = new[]
         {
             gameObject.AddComponent<AudioSource>(),
             gameObject.AddComponent<AudioSource>()
         };
 
-        foreach (var source in _clipPlaying)
+        foreach (var source in _clipsPlaying)
         {
             source.loop = true;
             source.playOnAwake = false;
@@ -69,21 +69,25 @@ public class EnemyFollow : MonoBehaviour
 
     private void Update()
     {
-        if (!CannibalsManager.IsInitialized || !GameManager.IsInitialized || GameManager.Instance.gameState != GameManager.GameState.Playing)
+        if (!CannibalsManager.IsInitialized || 
+            !GameManager.IsInitialized || 
+            GameManager.Instance.gameState != GameManager.GameState.Playing || 
+            CannibalsManager.Instance.GetState() != CannibalsManager.CannibalsState.Following)
             return;
         
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
         Play(CannibalsManager.Instance.GetState() == CannibalsManager.CannibalsState.Searching ? searchingSounds : isNearPlayer ? attackSounds : followingSounds);
-
-        MoveToward(_agent.destination);
+            
+        SetDestination(_player.position);
+        
+        RotateToward(_agent.destination);
 
         _animator.SetBool(_attack, isNearPlayer);
     }
 
     public void SetDestination(Vector3 destination)
     {
-        if (GameManager.Instance.gameState != GameManager.GameState.Playing) return;
         _agent.SetDestination(destination);
     }
 
@@ -93,9 +97,8 @@ public class EnemyFollow : MonoBehaviour
         GameManager.Instance.SetGameState(GameManager.GameState.LostCannibals);
     }
 
-    private void MoveToward(Vector3 targetPoint)
+    private void RotateToward(Vector3 targetPoint)
     {
-        if (GameManager.Instance.gameState != GameManager.GameState.Playing) return;
         var rotation = Quaternion.LookRotation(targetPoint - transform.position);
         rotation.x = 0f;
         rotation.z = 0f;
@@ -106,7 +109,7 @@ public class EnemyFollow : MonoBehaviour
 
         var movementVelocity = t.forward * speed;
 
-        movementVelocity.y = -.1f;
+        movementVelocity.y = -.8f;
 
         _rb.velocity = movementVelocity;
     }
@@ -122,23 +125,23 @@ public class EnemyFollow : MonoBehaviour
     private void Play(IReadOnlyList<AudioClip> clips)
     {
         var clip = clips[Random.Range(0, clips.Count)];
-        if (clips == followingSounds && _clipPlaying[_activePlayer].isPlaying || clip == _clipPlaying[_activePlayer].clip)
+        if (clips == followingSounds && _clipsPlaying[_activePlayer].isPlaying || clip == _clipsPlaying[_activePlayer].clip)
             return;
 
         foreach (var enumerator in _fader)
             if (enumerator != null)
                 StopCoroutine(enumerator);
 
-        if (_clipPlaying[_activePlayer].volume > 0)
+        if (_clipsPlaying[_activePlayer].volume > 0)
         {
-            _fader[0] = FadeAudioSource(_clipPlaying[_activePlayer], FadeDuration, 0.0f, () => { _fader[0] = null; });
+            _fader[0] = FadeAudioSource(_clipsPlaying[_activePlayer], FadeDuration, 0.0f, () => { _fader[0] = null; });
             StartCoroutine(_fader[0]);
         }
 
-        var nextPlayer = (_activePlayer + 1) % _clipPlaying.Length;
-        _clipPlaying[nextPlayer].clip = clip;
-        _clipPlaying[nextPlayer].Play();
-        _fader[1] = FadeAudioSource(_clipPlaying[nextPlayer], FadeDuration, Volume, () => { _fader[1] = null; });
+        var nextPlayer = (_activePlayer + 1) % _clipsPlaying.Length;
+        _clipsPlaying[nextPlayer].clip = clip;
+        _clipsPlaying[nextPlayer].Play();
+        _fader[1] = FadeAudioSource(_clipsPlaying[nextPlayer], FadeDuration, Volume, () => { _fader[1] = null; });
         StartCoroutine(_fader[1]);
 
         _activePlayer = nextPlayer;

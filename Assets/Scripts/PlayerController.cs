@@ -3,32 +3,37 @@ using static GameManager.GameState;
 
 public class PlayerController : Singleton<PlayerController>
 {
-    private Rigidbody _rb;
     private EnemyFollow[] _cannibals;
 
-    #region Camera Movement Variables
+    #region Camera Movement
 
     private const float MAXLookAngle = 50f;
 
     [SerializeField] private Camera playerCamera;
 
+    private const float SprintFOVStepTime = 10f;
+    private const float FOV = 60f;
+    private const float SprintFOV = 80f;
     private float _yaw;
     private float _pitch;
 
     #endregion
 
-    #region Movement Variables
+    #region Movement
 
+    private Rigidbody _rb;
     private const float WalkSpeed = 250f;
     private const float MAXVelocityChange = 450f;
 
     [HideInInspector] public bool isWalking;
+    
+    private const float MouseSensitivity = 60f;
+    private const KeyCode SprintKey = KeyCode.LeftShift;
+    private const KeyCode JumpKey = KeyCode.Space;
 
     #region Sprint
 
     private const float SprintSpeed = 500f;
-    private const float SprintFOV = 80f;
-    private const float SprintFOVStepTime = 10f;
 
     [HideInInspector] public bool isSprinting;
 
@@ -43,16 +48,6 @@ public class PlayerController : Singleton<PlayerController>
     #endregion
 
     #endregion
-
-    #region Config User
-
-    private const float FOV = 60f;
-    private const float MouseSensitivity = 60f;
-    private const KeyCode SprintKey = KeyCode.LeftShift;
-    private const KeyCode JumpKey = KeyCode.Space;
-
-    #endregion
-
 
     protected override void Awake()
     {
@@ -78,8 +73,8 @@ public class PlayerController : Singleton<PlayerController>
         _yaw += MouseSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime;
         _pitch -= MouseSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime;
 
-        playerCamera.transform.eulerAngles = new Vector3(Mathf.Clamp(_pitch, -MAXLookAngle, MAXLookAngle), _yaw, 0);
-        transform.eulerAngles = new Vector3(0, _yaw, 0);
+        playerCamera.transform.eulerAngles = new Vector3(Mathf.Clamp(_pitch, -MAXLookAngle, MAXLookAngle), _yaw);
+        transform.eulerAngles = Vector3.up * _yaw;
 
         #endregion
 
@@ -146,9 +141,6 @@ public class PlayerController : Singleton<PlayerController>
         var direction = transform.TransformDirection(Vector3.down);
 
         _isGrounded = Physics.Raycast(position, direction, out _, distance);
-
-        if (_isGrounded)
-            Debug.DrawRay(position, direction * distance, Color.red);
     }
 
     private void Jump()

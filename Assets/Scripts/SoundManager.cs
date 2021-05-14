@@ -8,19 +8,20 @@ using Random = UnityEngine.Random;
 
 public class SoundManager : Singleton<SoundManager>
 {
+    #region Audio
+
     [Header("Clips")] [SerializeField] private AudioClip lostCannibals;
     [SerializeField] private AudioClip lostTorch;
     [SerializeField] private AudioClip win;
-
     [SerializeField] private AudioClip pauseClip;
-
     [SerializeField] private AudioClip[] ambianceSearchingClip;
     [SerializeField] private AudioClip[] ambianceFollowingClip;
-
     private AudioSource _audioSource;
     private AudioSource _pauseAudioSource;
-
     private AudioSource[] _findObjectsOfType;
+    
+    #endregion
+
     private Transform _player;
 
     protected override void Awake()
@@ -35,6 +36,7 @@ public class SoundManager : Singleton<SoundManager>
 
     private void Start()
     {
+        _player = PlayerController.Instance.GetComponent<Transform>();
         CannibalsManager.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
         GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
     }
@@ -42,17 +44,18 @@ public class SoundManager : Singleton<SoundManager>
     private void RandomSound()
     {
         if (CannibalsManager.Instance.GetState() == Following) return;
+        float timeRandomSound;
         if (_audioSource.isPlaying)
         {
             var size = _audioSource.clip.length;
-            Invoke(nameof(RandomSound), Random.Range(size, size + 30));
+            timeRandomSound = Random.Range(size, size + 30);
+            Invoke(nameof(RandomSound), timeRandomSound);
             return;
         }
-
-        if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
-        var pos = GetRandomPoint(_player.position, 3.0f);
-        AudioSource.PlayClipAtPoint(ambianceSearchingClip[Random.Range(0, ambianceSearchingClip.Length)], pos, 1);
-        Invoke(nameof(RandomSound), Random.Range(60, 250));
+        var randomPos = GetRandomPoint(_player.position, 3.0f);
+        AudioSource.PlayClipAtPoint(ambianceSearchingClip[Random.Range(0, ambianceSearchingClip.Length)], randomPos, 1);
+        timeRandomSound = Random.Range(60, 250);
+        Invoke(nameof(RandomSound), timeRandomSound);
     }
 
     private void HandleGameStateChanged(GameManager.GameState previous, GameManager.GameState actual)
@@ -95,7 +98,8 @@ public class SoundManager : Singleton<SoundManager>
         switch (actual)
         {
             case Searching:
-                Invoke(nameof(RandomSound), Random.Range(10, 12));
+                var timeRandomSound = Random.Range(10, 12);
+                Invoke(nameof(RandomSound), timeRandomSound);
                 break;
             case Following:
                 if (_audioSource.isPlaying) return;
@@ -107,8 +111,6 @@ public class SoundManager : Singleton<SoundManager>
         }
     }
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    // ReSharper disable Unity.PerformanceAnalysis
     private void PauseGame()
     {
         _findObjectsOfType = FindObjectsOfType<AudioSource>();
