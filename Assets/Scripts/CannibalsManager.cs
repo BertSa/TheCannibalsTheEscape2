@@ -34,7 +34,7 @@ public class CannibalsManager : Singleton<CannibalsManager>
     /// <param name="center">center of position</param>
     /// <param name="maxDistance">max distance for a random position</param>
     /// <returns>a random point within the NavMeshSurface </returns>
-    private static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
+    public static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
     {
         var randomPos = Random.insideUnitSphere * maxDistance + center;
 

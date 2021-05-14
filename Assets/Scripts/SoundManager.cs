@@ -38,14 +38,15 @@ public class SoundManager : Singleton<SoundManager>
         if (CannibalsManager.Instance.GetState() == Following) return;
         if (_audioSource.isPlaying)
         {
-            Invoke(nameof(RandomSound), Random.Range(10, 12));
+            var size = _audioSource.clip.length;
+            Invoke(nameof(RandomSound), Random.Range(size, size + 30));
             return;
         }
 
         if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
-        var pos = RandomCircle(_player.position, 3.0f);
+        var pos = GetRandomPoint(_player.position, 3.0f);
         AudioSource.PlayClipAtPoint(ambianceSearchingClip[Random.Range(0, ambianceSearchingClip.Length)], pos, 1);
-        Invoke(nameof(RandomSound), Random.Range(50, 250));
+        Invoke(nameof(RandomSound), Random.Range(60, 250));
     }
 
     private void HandleGameStateChanged(GameManager.GameState previous, GameManager.GameState actual)
@@ -109,18 +110,6 @@ public class SoundManager : Singleton<SoundManager>
         PauseGame();
         _audioSource.clip = clip;
         _audioSource.Play();
-    }
-
-
-    public static Vector3 RandomCircle(Vector3 center, float radius)
-    {
-        const float minDistance = 3f;
-        var ang = Random.value * 360;
-        var pos = center;
-        pos.x += minDistance + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
-        pos.y += Random.Range(0, 7);
-        pos.z += minDistance + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
-        return pos;
     }
 
     [Serializable]
