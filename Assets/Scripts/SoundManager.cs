@@ -4,17 +4,17 @@ using UnityEngine.Events;
 using static CannibalsManager;
 using static CannibalsManager.CannibalsState;
 using static GameManager.GameState;
+using Random = UnityEngine.Random;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    [Header("Clips")] 
-    [SerializeField] private AudioClip lostCannibals; 
+    [Header("Clips")] [SerializeField] private AudioClip lostCannibals;
     [SerializeField] private AudioClip lostTorch;
     [SerializeField] private AudioClip win;
-    
-    [SerializeField] private AudioClip ambianceSearchingClip;
-    [SerializeField] private AudioClip ambianceFollowingClip;
-        
+
+    [SerializeField] private AudioClip[] ambianceSearchingClip;
+    [SerializeField] private AudioClip[] ambianceFollowingClip;
+
     private AudioSource _audioSource;
 
     private AudioSource[] _findObjectsOfType;
@@ -24,15 +24,28 @@ public class SoundManager : Singleton<SoundManager>
     {
         base.Awake();
         _audioSource = gameObject.AddComponent<AudioSource>();
+        _audioSource.loop = false;
     }
-  
+
     private void Start()
     {
-        // if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
-        // var pos = RandomCircle(_player.position, 6.0f);
-        // AudioSource.PlayClipAtPoint(following[Random.Range(0, following.Count)], pos, MaxValue);
         CannibalsManager.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
         GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
+    }
+
+    private void RandomSound()
+    {
+        if (CannibalsManager.Instance.GetState() == Following) return;
+        if (_audioSource.isPlaying)
+        {
+            Invoke(nameof(RandomSound), Random.Range(10, 12));
+            return;
+        }
+
+        if (PlayerController.IsInitialized) _player = PlayerController.Instance.GetComponent<Transform>();
+        var pos = RandomCircle(_player.position, 3.0f);
+        AudioSource.PlayClipAtPoint(ambianceSearchingClip[Random.Range(0, ambianceSearchingClip.Length)], pos, 1);
+        Invoke(nameof(RandomSound), Random.Range(50, 250));
     }
 
     private void HandleGameStateChanged(GameManager.GameState previous, GameManager.GameState actual)
@@ -71,11 +84,11 @@ public class SoundManager : Singleton<SoundManager>
         switch (actual)
         {
             case Searching:
-                _audioSource.clip = ambianceSearchingClip;
-                _audioSource.Play();
+                Invoke(nameof(RandomSound), Random.Range(10, 12));
                 break;
             case Following:
-                _audioSource.clip = ambianceFollowingClip;
+                if (_audioSource.isPlaying) return;
+                _audioSource.clip = ambianceFollowingClip[Random.Range(0, ambianceFollowingClip.Length)];
                 _audioSource.Play();
                 break;
             default:
@@ -96,6 +109,18 @@ public class SoundManager : Singleton<SoundManager>
         PauseGame();
         _audioSource.clip = clip;
         _audioSource.Play();
+    }
+
+
+    public static Vector3 RandomCircle(Vector3 center, float radius)
+    {
+        const float minDistance = 3f;
+        var ang = Random.value * 360;
+        var pos = center;
+        pos.x += minDistance + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
+        pos.y += Random.Range(0, 7);
+        pos.z += minDistance + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
+        return pos;
     }
 
     [Serializable]

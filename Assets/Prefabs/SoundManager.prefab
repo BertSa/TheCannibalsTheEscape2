@@ -46,3 +46,12 @@ MonoBehaviour:
   lostCannibals: {fileID: 8300000, guid: 65f625ffc12796e47a873d7384a85362, type: 3}
   lostTorch: {fileID: 8300000, guid: c24fff81e3e63c3499716b64cdaf6032, type: 3}
   win: {fileID: 8300000, guid: e76663dfc4ce3ae439a1642d27ccefe3, type: 3}
+  ambianceSearchingClip:
+  - {fileID: 8300000, guid: 1ccd962e44820502caec8a83b141e0b7, type: 3}
+  - {fileID: 8300000, guid: f604d27d6c04e96779d3d3807ce58930, type: 3}
+  - {fileID: 8300000, guid: 3e84b0eb497b71a3480e32bd183fc8a1, type: 3}
+  - {fileID: 8300000, guid: 36ce42ef42f48097181adedb64d5080c, type: 3}
+  ambianceFollowingClip:
+  - {fileID: 8300000, guid: 27b7ee1782ea93ba88fcbc37af3416d5, type: 3}
+  - {fileID: 8300000, guid: fc6965f53eb38793b8204e41efdedc34, type: 3}
+  - {fileID: 8300000, guid: 6abe6c8ae7a79905cbed954645d67d84, type: 3}
