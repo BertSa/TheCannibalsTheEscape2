@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using static Fade;
 
 public class Cinematic : MonoBehaviour
@@ -16,6 +17,13 @@ public class Cinematic : MonoBehaviour
         images[_index].Activate(fade);
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            UIManager.Instance.CinematicFinished(this);
+        }
+    }
 
     public void NextSlide()
     {
