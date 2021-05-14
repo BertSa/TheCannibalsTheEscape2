@@ -69,8 +69,10 @@ public class PlayerController : Singleton<PlayerController>
 
     private void Update()
     {
+        Cursor.lockState = GameManager.Instance.gameState == Playing ? CursorLockMode.Locked : CursorLockMode.None;
+        
         if (GameManager.Instance.gameState != Playing) return;
-
+        
         #region Camera
 
         _yaw += MouseSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime;

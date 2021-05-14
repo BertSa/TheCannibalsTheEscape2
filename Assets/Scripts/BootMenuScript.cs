@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MenuScript : Singleton<MenuScript>
+public class BootMenuScript : MonoBehaviour
 {
     [SerializeField] private Button start;
     [SerializeField] private Button quit;
@@ -21,7 +21,7 @@ public class MenuScript : Singleton<MenuScript>
         Application.Quit();
     }
 
-    private static void StartApplication()
+    protected virtual void StartApplication()
     {
         SceneManager.LoadScene("Oussama");
     }

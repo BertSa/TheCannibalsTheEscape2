@@ -7,7 +7,6 @@ public class GameManager : Singleton<GameManager>
 {
     [HideInInspector] public GameState gameState = Beginning;
     [HideInInspector] public EventGameState onGameStateChanged;
-
     protected override void Awake()
     {
         base.Awake();
@@ -22,16 +21,26 @@ public class GameManager : Singleton<GameManager>
         SetGameState(Beginning);
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.P))
+        {
+            if (gameState == Playing)
+                SetGameState(Pause);
+            else if (gameState == Pause)
+                SetGameState(Playing);
+        }
+    }
+
     public void SetGameState(GameState actual)
     {
         var oldGameState = gameState;
         gameState = actual;
         
-        Time.timeScale = gameState == Playing ? 1f : 0f;
+        Time.timeScale = gameState == Playing ? 1 : 0;
 
         onGameStateChanged.Invoke(oldGameState, gameState);
     }
-
 
     public enum GameState
     {

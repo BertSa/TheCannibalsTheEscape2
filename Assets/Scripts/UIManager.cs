@@ -12,6 +12,8 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Cinematic cinematicEndLostCannibals;
     [SerializeField] private GameObject hud;
 
+    [SerializeField] private GameObject pauseMenu;
+
     private void Start()
     {
         if (GameManager.IsInitialized) GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
@@ -26,8 +28,11 @@ public class UIManager : Singleton<UIManager>
                 cinematicBeginning.gameObject.SetActive(true);
                 break;
             case Pause:
+                hud.SetActive(false);
+                pauseMenu.SetActive(true);
                 break;
             case Playing:
+                pauseMenu.SetActive(false);
                 if (previous == Beginning) cinematicBeginning.gameObject.SetActive(false);
                 hud.SetActive(true);
                 break;
