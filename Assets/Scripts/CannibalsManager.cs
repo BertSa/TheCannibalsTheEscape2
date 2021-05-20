@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class CannibalsManager : Singleton<CannibalsManager>
 {
-    [HideInInspector] public SoundManager.EventAmbiance onAmbianceChanged;
+    public Events.EventAmbiance onAmbianceChanged = new Events.EventAmbiance();
     
     [SerializeField] private CannibalsState state = CannibalsState.Following;
 
@@ -14,13 +16,34 @@ public class CannibalsManager : Singleton<CannibalsManager>
     {
         _cannibals = FindObjectsOfType<EnemyFollow>();
         _player = PlayerController.Instance.GetComponent<Transform>();
-        SetState(CannibalsState.Following);
-        InvokeRepeating(nameof(FollowTrace), 0, 5);
+        GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
+    }
+
+    private void HandleGameStateChanged(GameManager.GameState oldGameState, GameManager.GameState actual)
+    {
+        switch (actual)
+        {
+            case GameManager.GameState.Playing:
+                if (oldGameState == GameManager.GameState.Beginning)
+                    SetState(CannibalsState.Following);
+                InvokeRepeating(nameof(FollowTrace), 0, 5);
+                break;
+            case GameManager.GameState.Beginning:
+            case GameManager.GameState.LostCannibals:
+            case GameManager.GameState.LostTorch:
+            case GameManager.GameState.Won:
+            case GameManager.GameState.Pause:
+                CancelInvoke(nameof(FollowTrace));
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
+        }
     }
 
     private void FollowTrace()
     {
-        if (state == CannibalsState.Following || !AreaStrategy.IsInitialized || GameManager.Instance.gameState != GameManager.GameState.Playing)
+        if (state == CannibalsState.Following || 
+            GameManager.Instance.gameState != GameManager.GameState.Playing)
             return;
 
         foreach (var cannibal in _cannibals)
@@ -40,10 +63,6 @@ public class CannibalsManager : Singleton<CannibalsManager>
     {
         onAmbianceChanged.Invoke(state, actual);
         state = actual;
-    }
-
-    private void Update()
-    {
     }
 
     public enum CannibalsState

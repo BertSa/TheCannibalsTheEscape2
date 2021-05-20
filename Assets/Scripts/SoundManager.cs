@@ -23,7 +23,7 @@ public class SoundManager : Singleton<SoundManager>
     
     #endregion
 
-    private Transform _player;
+    private Transform _playerTransform;
 
     protected override void Awake()
     {
@@ -37,7 +37,8 @@ public class SoundManager : Singleton<SoundManager>
 
     private void Start()
     {
-        _player = PlayerController.Instance.GetComponent<Transform>();
+        _playerTransform = PlayerController.Instance.GetComponent<Transform>();
+        
         CannibalsManager.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
         GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
     }
@@ -53,7 +54,7 @@ public class SoundManager : Singleton<SoundManager>
             Invoke(nameof(RandomSound), timeRandomSound);
             return;
         }
-        var randomPos = GetRandomPoint(_player.position, 3.0f);
+        var randomPos = GetRandomPoint(_playerTransform.position, 3.0f);
         AudioSource.PlayClipAtPoint(ambianceSearchingClip[Random.Range(0, ambianceSearchingClip.Length)], randomPos, 1);
         timeRandomSound = Random.Range(60, 250);
         Invoke(nameof(RandomSound), timeRandomSound);
@@ -64,23 +65,23 @@ public class SoundManager : Singleton<SoundManager>
         switch (actual)
         {
             case Beginning:
-                PauseGame();
+                PauseGameSounds();
                 break;
             case Pause:
-                PauseGame();
+                PauseGameSounds();
                 _pauseAudioSource.Play();
                 break;
             case Playing:
                 Play();
                 break;
             case Won:
-                EndGame(win);
+                EndGameSound(win);
                 break;
             case LostCannibals:
-                EndGame(lostCannibals);
+                EndGameSound(lostCannibals);
                 break;
             case LostTorch:
-                EndGame(lostTorch);
+                EndGameSound(lostTorch);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
@@ -112,21 +113,16 @@ public class SoundManager : Singleton<SoundManager>
         }
     }
 
-    private void PauseGame()
+    private void PauseGameSounds()
     {
         _findObjectsOfType = FindObjectsOfType<AudioSource>();
         foreach (var audioSource in _findObjectsOfType) audioSource.Pause();
     }
 
-    private void EndGame(AudioClip clip)
+    private void EndGameSound(AudioClip clip)
     {
-        PauseGame();
+        PauseGameSounds();
         _audioSource.clip = clip;
         _audioSource.Play();
-    }
-
-    [Serializable]
-    public class EventAmbiance : UnityEvent<CannibalsState, CannibalsState>
-    {
     }
 }

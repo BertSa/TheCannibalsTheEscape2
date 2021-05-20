@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using static Fade;
+﻿using UnityEngine;
 
 public class Cinematic : MonoBehaviour
 {

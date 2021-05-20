@@ -21,18 +21,15 @@ public class EnemyFollow : MonoBehaviour
     
     #region Audio
 
-    [Header("Clips")] [SerializeField] private AudioClip[] attackSounds;
-    [SerializeField] private AudioClip[] followingSounds;
-    [SerializeField] private AudioClip[] searchingSounds;
+    [Header("Clips")] [SerializeField] private AudioClip[] attackSounds, followingSounds, searchingSounds;
     private AudioSource[] _clipsPlaying;
 
     private readonly IEnumerator[] _fader = new IEnumerator[2];
 
-    private int _activePlayer;
+    private int _activePlayerIndex;
 
     private const int VolumeChangesPerSecond = 15;
-    private const float FadeDuration = 1.0f;
-    private const float Volume = 0.5f;
+    private const float FadeDuration = 1.0f, Volume = 0.5f;
 
     #endregion
 
@@ -69,8 +66,7 @@ public class EnemyFollow : MonoBehaviour
 
     private void Update()
     {
-        if (!CannibalsManager.IsInitialized || 
-            !GameManager.IsInitialized || 
+        if (
             GameManager.Instance.gameState != GameManager.GameState.Playing || 
             CannibalsManager.Instance.GetState() != CannibalsManager.CannibalsState.Following)
             return;
@@ -93,7 +89,7 @@ public class EnemyFollow : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (!other.gameObject.CompareTag("Player") || !GameManager.IsInitialized) return;
+        if (!other.gameObject.CompareTag("Player")) return;
         GameManager.Instance.SetGameState(GameManager.GameState.LostCannibals);
     }
 
@@ -125,26 +121,26 @@ public class EnemyFollow : MonoBehaviour
     private void Play(IReadOnlyList<AudioClip> clips)
     {
         var clip = clips[Random.Range(0, clips.Count)];
-        if (clips == followingSounds && _clipsPlaying[_activePlayer].isPlaying || clip == _clipsPlaying[_activePlayer].clip)
+        if (clips == followingSounds && _clipsPlaying[_activePlayerIndex].isPlaying || clip == _clipsPlaying[_activePlayerIndex].clip)
             return;
 
         foreach (var enumerator in _fader)
             if (enumerator != null)
                 StopCoroutine(enumerator);
 
-        if (_clipsPlaying[_activePlayer].volume > 0)
+        if (_clipsPlaying[_activePlayerIndex].volume > 0)
         {
-            _fader[0] = FadeAudioSource(_clipsPlaying[_activePlayer], FadeDuration, 0.0f, () => { _fader[0] = null; });
+            _fader[0] = FadeAudioSource(_clipsPlaying[_activePlayerIndex], FadeDuration, 0.0f, () => { _fader[0] = null; });
             StartCoroutine(_fader[0]);
         }
 
-        var nextPlayer = (_activePlayer + 1) % _clipsPlaying.Length;
+        var nextPlayer = (_activePlayerIndex + 1) % _clipsPlaying.Length;
         _clipsPlaying[nextPlayer].clip = clip;
         _clipsPlaying[nextPlayer].Play();
         _fader[1] = FadeAudioSource(_clipsPlaying[nextPlayer], FadeDuration, Volume, () => { _fader[1] = null; });
         StartCoroutine(_fader[1]);
 
-        _activePlayer = nextPlayer;
+        _activePlayerIndex = nextPlayer;
     }
 
 

@@ -1,12 +1,14 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using static GameManager.GameState;
 using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
     [HideInInspector] public GameState gameState = Beginning;
-    [HideInInspector] public EventGameState onGameStateChanged;
+    public Events.EventGameState onGameStateChanged = new Events.EventGameState();
+    private bool _pausable = true;
+    
     protected override void Awake()
     {
         base.Awake();
@@ -23,24 +25,25 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        if (!Input.GetKey(KeyCode.P)) return;
-        if (gameState == Playing)
-            SetGameState(Pause);
-        else if (gameState == Pause)
-            SetGameState(Playing);
+        if (Input.GetKeyDown(KeyCode.P) && _pausable)
+            TogglePause();
     }
 
     public void SetGameState(GameState actual)
     {
-        var oldGameState = gameState;
+        Time.timeScale = actual == Playing ? 1 : 0;
+        
+        onGameStateChanged.Invoke(gameState, actual);
+        
         gameState = actual;
         
-        if (oldGameState == Beginning && actual == Playing)
-            CannibalsManager.Instance.SetState(CannibalsManager.CannibalsState.Following);
-        
-        Time.timeScale = gameState == Playing ? 1 : 0;
+        if (gameState != Beginning && gameState != Playing && gameState != Pause)
+            _pausable = false;
+    }
 
-        onGameStateChanged.Invoke(oldGameState, gameState);
+    private void TogglePause()
+    {
+        SetGameState(gameState == Playing ? Pause : Playing);
     }
 
     public enum GameState
@@ -51,5 +54,10 @@ public class GameManager : Singleton<GameManager>
         Won,
         Pause,
         Beginning
+    }
+
+    public static void RestartGame()
+    {
+        SceneManager.LoadScene("BootMenu");
     }
 }

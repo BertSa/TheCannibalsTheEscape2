@@ -83,7 +83,7 @@ public class PlayerController : Singleton<PlayerController>
         var fovResult = isSprinting ? SprintFOV : FOV;
         playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, fovResult, SprintFOVStepTime * Time.deltaTime);
 
-        if (TorchScript.IsInitialized) TorchScript.Instance.SetRange(isSprinting);
+        TorchScript.Instance.SetRange(isSprinting);
 
         #endregion
 

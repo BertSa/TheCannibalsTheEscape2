@@ -14,7 +14,6 @@ public class TorchScript : Singleton<TorchScript>
     private Light _light;
     
     private float _percentageHealth;
-    private float _random;
 
     private float _torchHealth;
 
@@ -27,8 +26,8 @@ public class TorchScript : Singleton<TorchScript>
     private void Update()
     {
         if (GameManager.Instance.gameState != Playing) return;
-        _random = Random.Range(0.0f, 150.0f);
-        var noise = Mathf.PerlinNoise(_random * _percentageHealth, Time.time);
+        var random = Random.Range(0.0f, 150.0f);
+        var noise = Mathf.PerlinNoise(random * _percentageHealth, Time.time);
         _light.intensity = Mathf.Lerp(MINIntensity * _percentageHealth, MAXIntensity * _percentageHealth, noise);
         fireParticle.transform.localScale = Vector3.one * (DefaultScale * _percentageHealth);
     }

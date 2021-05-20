@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using static GameManager;
 using static GameManager.GameState;
@@ -12,13 +11,11 @@ public class UIManager : Singleton<UIManager>
         cinematicEndLostTorch, 
         cinematicEndLostCannibals;
     
-    [SerializeField] private GameObject hud;
-    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject hud, pauseMenu;
 
     private void Start()
     {
-        if (GameManager.IsInitialized) GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
-        HandleGameStateChanged(Beginning, Beginning);
+        GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
     private void HandleGameStateChanged(GameState previous, GameState actual)
@@ -53,18 +50,11 @@ public class UIManager : Singleton<UIManager>
 
     public void CinematicFinished(Cinematic cinematic)
     {
-        if (!GameManager.IsInitialized) return;
-        
         if (cinematic.Equals(cinematicBeginning))
             GameManager.Instance.SetGameState(Playing);
-        else if (cinematic.Equals(cinematicEndWin) || 
-                 cinematic.Equals(cinematicEndLostCannibals) || 
+        else if (cinematic.Equals(cinematicEndWin) ||
+                 cinematic.Equals(cinematicEndLostCannibals) ||
                  cinematic.Equals(cinematicEndLostTorch))
-            SceneManager.LoadScene("BootMenu");
+            RestartGame();
     }
-}
-
-[Serializable]
-public class EventGameState : UnityEvent<GameState, GameState>
-{
 }

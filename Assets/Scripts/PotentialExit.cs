@@ -2,8 +2,7 @@
 
 public class PotentialExit : MonoBehaviour
 {
-    [SerializeField] private GameObject exit;
-    [SerializeField] private GameObject deadEnd;
+    [SerializeField] private GameObject exit, deadEnd;
 
     private void Start()
     {

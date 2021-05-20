@@ -3,12 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenuScript : BootMenuScript
 {
-    protected override void StartApplication()
+    protected override void Begin()
     {
         GameManager.Instance.SetGameState(GameManager.GameState.Playing);
     }
 
-    protected override void QuitApplication()
+    protected override void Exit()
     {
         SceneManager.LoadScene("BootMenu");
     }

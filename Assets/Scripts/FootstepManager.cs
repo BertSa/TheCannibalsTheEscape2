@@ -7,8 +7,7 @@ public class FootstepManager : MonoBehaviour
     #region Audio
     
     [Header("Audio")] private AudioSource _audioSource;
-    [SerializeField] private AudioClip running;
-    [SerializeField] private AudioClip walking;
+    [SerializeField] private AudioClip running, walking;
     
     #endregion
     
@@ -22,7 +21,7 @@ public class FootstepManager : MonoBehaviour
 
     private void Start()
     {
-        if (PlayerController.IsInitialized) _player = PlayerController.Instance;
+        _player = PlayerController.Instance;
     }
 
     private void Update()

@@ -4,24 +4,23 @@ using UnityEngine.UI;
 
 public class BootMenuScript : MonoBehaviour
 {
-    [SerializeField] private Button start;
-    [SerializeField] private Button quit;
+    [SerializeField] private Button start, quit;
 
     private void Start()
     {
         start.onClick = new Button.ButtonClickedEvent();
         quit.onClick = new Button.ButtonClickedEvent();
         
-        start.onClick.AddListener(StartApplication);
-        quit.onClick.AddListener(QuitApplication);
+        start.onClick.AddListener(Begin);
+        quit.onClick.AddListener(Exit);
     }
 
-    protected virtual void QuitApplication()
+    protected virtual void Exit()
     {
         Application.Quit();
     }
 
-    protected virtual void StartApplication()
+    protected virtual void Begin()
     {
         SceneManager.LoadScene("Game");
     }

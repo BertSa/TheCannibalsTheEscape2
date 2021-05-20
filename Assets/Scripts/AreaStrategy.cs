@@ -9,13 +9,15 @@ public class AreaStrategy : Singleton<AreaStrategy>
 
     private void Start()
     {
-        if (PlayerController.IsInitialized) _player = PlayerController.Instance.transform;
+        _player = PlayerController.Instance.transform;
         colliderPlayer = GetComponent<CapsuleCollider>();
     }
 
     private void Update()
     {
-        if (!CannibalsManager.IsInitialized || CannibalsManager.Instance.GetState() == CannibalsManager.CannibalsState.Searching ||GameManager.Instance.gameState!=GameManager.GameState.Playing)
+        if (
+            // !CannibalsManager.IsInitialized || 
+            CannibalsManager.Instance.GetState() == CannibalsManager.CannibalsState.Searching ||GameManager.Instance.gameState!=GameManager.GameState.Playing)
             return;
         
         var colliders = new Collider[30];
@@ -31,11 +33,14 @@ public class AreaStrategy : Singleton<AreaStrategy>
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!GameManager.IsInitialized || 
-            !CannibalsManager.IsInitialized || 
+        if (
+            // !GameManager.IsInitialized || 
+            // !CannibalsManager.IsInitialized || 
             GameManager.Instance.gameState != GameManager.GameState.Playing ) return;
         
-        if (other.gameObject.CompareTag("Cannibal") && CannibalsManager.IsInitialized)
+        if (other.gameObject.CompareTag("Cannibal") 
+            // && CannibalsManager.IsInitialized
+            )
             CannibalsManager.Instance.SetState(CannibalsManager.CannibalsState.Following);
     }
 
