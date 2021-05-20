@@ -2,10 +2,10 @@
 
 
 Bienvenue joueur,
-ici vous retrouvez les explications pour le jeu **The Cannibals : The Escape 2**.
+ici vous retrouvez les explications pour le jeu ```The Cannibals : The Escape 2```.
 
 ## Attention
-La scène de départ est le BootMenu.unity de là elle vous guidera. 
+La scène de départ est le ```BootMenu.unity``` de là elle vous guidera. 
 
 ## Definition
 
@@ -21,7 +21,7 @@ Dans le jeu, il y a trois sorties potentielles seulement l'une d'entre elles vou
 | Key(s) | README |
 | ------ | ------ |
 | P | enter or quit Pause menu |
-| Space | Skip intro |
+| Space | Skip cinematic |
 | Left shift + (w / up arrow) | fast running |
 | Up arrow or w | walking |
 | Left arrow or a | move left |
