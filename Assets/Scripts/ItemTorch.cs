@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using static Enums.GameState;
 
-public class TorchScript : Singleton<TorchScript>
+public class ItemTorch : Singleton<ItemTorch>
 {
     private const float DefaultScale = 2f;
     private const float MINIntensity = 2f;
@@ -29,7 +29,7 @@ public class TorchScript : Singleton<TorchScript>
         }
 
         UpdateTorchHealth();
-        
+
         EndGameIfTorchIsDead();
 
         UpdateParticles();
@@ -47,7 +47,7 @@ public class TorchScript : Singleton<TorchScript>
     {
         if (PercentageHealth <= 0.01 && GameManager.IsInitialized)
         {
-            GameManager.Instance.SetGameState(LostTorch);
+            GameManager.Instance.UpdateGameState(LostTorch);
         }
     }
 

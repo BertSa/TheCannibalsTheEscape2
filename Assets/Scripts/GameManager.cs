@@ -16,16 +16,25 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        var potentialExits = FindObjectsOfType<PotentialExit>();
-        if (potentialExits.Length < 1)
+        if (InitExitOrReturnIfNoExitFound())
         {
             return;
         }
 
+        UpdateGameState(GameState.Beginning);
+    }
+
+    private bool InitExitOrReturnIfNoExitFound()
+    {
+        var potentialExits = FindObjectsOfType<PotentialExit>();
+        if (potentialExits.Length < 1)
+        {
+            return true;
+        }
+
         var selectedExit = Random.Range(0, potentialExits.Length);
         potentialExits[selectedExit].SetAsExit(true);
-
-        SetGameState(GameState.Beginning);
+        return false;
     }
 
     private void Update()
@@ -36,7 +45,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void SetGameState(GameState actual)
+    public void UpdateGameState(GameState actual)
     {
         Time.timeScale = actual == GameState.Playing ? 1 : 0;
 
@@ -50,13 +59,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void TogglePause()
-    {
-        SetGameState(State == GameState.Playing ? GameState.Pause : GameState.Playing);
-    }
+    private void TogglePause() => UpdateGameState(State == GameState.Playing ? GameState.Pause : GameState.Playing);
 
-    public static void RestartGame()
-    {
-        SceneManager.LoadScene("BootMenu");
-    }
+    public static void RestartGame() => SceneManager.LoadScene("BootMenu");
 }

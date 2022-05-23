@@ -10,23 +10,18 @@ public class CannibalsManager : Singleton<CannibalsManager>
 
     public CannibalsState State { get; private set; } = CannibalsState.Following;
 
-    private EnemyFollow[] _cannibals;
-    private Transform _player;
+    private EnemyFollow[] Cannibals { get; set; }
+    private Transform Player { get; set; }
 
     private void Start()
     {
-        _cannibals = FindObjectsOfType<EnemyFollow>();
-        _player = PlayerController.Instance.GetComponent<Transform>();
+        Cannibals = FindObjectsOfType<EnemyFollow>();
+        Player = PlayerController.Instance.GetComponent<Transform>();
         GameManager.Instance.OnGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
     private void HandleGameStateChanged(GameState oldGameState, GameState actual)
     {
-        if (actual.GetType() != typeof(GameState))
-        {
-            throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
-        }
-
         if (actual != GameState.Playing)
         {
             CancelInvoke(nameof(FollowTrace));
@@ -52,9 +47,9 @@ public class CannibalsManager : Singleton<CannibalsManager>
             return;
         }
 
-        foreach (var cannibal in _cannibals)
+        foreach (var cannibal in Cannibals)
         {
-            var randomPoint = GetRandomPoint(_player.position, AreaStrategy.Instance.GetRadius());
+            var randomPoint = GetRandomPoint(Player.position, AreaStrategy.Instance.GetRadius());
             cannibal.SetDestination(randomPoint);
         }
     }

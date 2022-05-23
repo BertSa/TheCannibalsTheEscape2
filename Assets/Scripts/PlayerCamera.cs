@@ -14,7 +14,7 @@ public class PlayerCamera : Singleton<PlayerCamera>
     private float Yaw { get; set; }
     private float Pitch { get; set; }
 
-    private GameState GameState => GameManager.Instance.State;
+    private bool IsPlaying => GameManager.Instance.State == GameState.Playing;
     private bool IsSprinting => PlayerController.Instance.IsSprinting;
 
     protected override void Awake()
@@ -31,7 +31,7 @@ public class PlayerCamera : Singleton<PlayerCamera>
 
     private void Update()
     {
-        if (GameState != GameState.Playing)
+        if (!IsPlaying)
         {
             Cursor.lockState = CursorLockMode.None;
             return;

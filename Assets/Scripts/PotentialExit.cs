@@ -11,10 +11,6 @@ public class PotentialExit : MonoBehaviour
     private void Awake()
     {
         Collider = GetComponent<Collider>();
-    }
-
-    private void Start()
-    {
         SetAsExit(false);
     }
 
@@ -22,7 +18,7 @@ public class PotentialExit : MonoBehaviour
     {
         if (GameManager.IsInitialized)
         {
-            GameManager.Instance.SetGameState(GameState.Won);
+            GameManager.Instance.UpdateGameState(GameState.Won);
         }
     }
 

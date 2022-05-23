@@ -2,24 +2,29 @@
 
 public class Cinematic : MonoBehaviour
 {
-    [SerializeField] private MoveImage[] images;
+    [SerializeField] private CinematicMoveImage[] images;
     [SerializeField] private Fade fade;
-    private int _index;
+    private int Index { get; set; }
 
     private void Start()
     {
         foreach (var image in images)
         {
-            if (image.GetType() == typeof(MoveImage))
+            if (image.GetType() == typeof(CinematicMoveImage))
             {
                 image.cinematic = this;
             }
         }
 
-        images[_index].Activate(fade);
+        images[Index].Activate(fade);
     }
 
     private void Update()
+    {
+        CheckSkipFirstCinematic();
+    }
+
+    private void CheckSkipFirstCinematic()
     {
         if (Input.GetKey(KeyCode.Space))
         {
@@ -29,14 +34,13 @@ public class Cinematic : MonoBehaviour
 
     public void NextSlide()
     {
-        if (++_index < images.Length)
-        {
-            images[_index].Activate(fade);
-        }
-        else
+        if (++Index >= images.Length)
         {
             UIManager.Instance.CinematicFinished(this);
+            return;
         }
+
+        images[Index].Activate(fade);
     }
 }
 

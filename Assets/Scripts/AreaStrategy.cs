@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class AreaStrategy : Singleton<AreaStrategy>
 {
-    private Transform _player;
     [HideInInspector] public CapsuleCollider colliderPlayer;
+    private Transform Player { get; set; }
 
     private bool IsPlaying => GameManager.Instance.State == GameState.Playing;
 
@@ -18,7 +18,7 @@ public class AreaStrategy : Singleton<AreaStrategy>
 
     private void Start()
     {
-        _player = PlayerController.Instance.transform;
+        Player = PlayerController.Instance.transform;
     }
 
     private void Update()
@@ -36,7 +36,7 @@ public class AreaStrategy : Singleton<AreaStrategy>
         var colliders = new Collider[30];
         var positions = new List<Vector3>();
 
-        if (Physics.OverlapSphereNonAlloc(_player.position, GetRadius(), colliders) > 0)
+        if (Physics.OverlapSphereNonAlloc(Player.position, GetRadius(), colliders) > 0)
         {
             positions.AddRange(from c in colliders where c != null && c.CompareTag("Cannibal") select c.transform.position);
         }

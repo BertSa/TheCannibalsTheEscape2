@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class BootMenuScript : MonoBehaviour
+public class UIBootMenuScript : MonoBehaviour
 {
     [SerializeField] private Button start;
     [SerializeField] private Button quit;

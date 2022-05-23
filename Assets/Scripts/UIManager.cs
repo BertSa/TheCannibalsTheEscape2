@@ -55,7 +55,7 @@ public class UIManager : Singleton<UIManager>
     {
         if (cinematic.Equals(cinematicBeginning))
         {
-            GameManager.Instance.SetGameState(GameState.Playing);
+            GameManager.Instance.UpdateGameState(GameState.Playing);
         }
         else if (cinematic.Equals(cinematicEndWin) || cinematic.Equals(cinematicEndLostCannibals) || cinematic.Equals(cinematicEndLostTorch))
         {

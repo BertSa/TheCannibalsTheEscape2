@@ -1,8 +1,6 @@
 using System;
 using Enums;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using static CannibalsManager;
 using static Enums.CannibalsState;
 using static Enums.GameState;
@@ -16,25 +14,24 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private AudioClip pauseClip;
     [SerializeField] private AudioClip[] ambianceSearchingClip;
     [SerializeField] private AudioClip[] ambianceFollowingClip;
-    private AudioSource _audioSource;
-    private AudioSource _pauseAudioSource;
-    private AudioSource[] _findObjectsOfType;
 
-    private Transform _playerTransform;
+    private AudioSource Source { get; set; }
+    private AudioSource PauseAudioSource { get; set; }
+    private Transform PlayerTransform { get; set; }
 
     protected override void Awake()
     {
         base.Awake();
-        _audioSource = gameObject.AddComponent<AudioSource>();
-        _pauseAudioSource = gameObject.AddComponent<AudioSource>();
-        _audioSource.loop = false;
-        _pauseAudioSource.loop = true;
-        _pauseAudioSource.clip = pauseClip;
+        Source = gameObject.AddComponent<AudioSource>();
+        Source.loop = false;
+        PauseAudioSource = gameObject.AddComponent<AudioSource>();
+        PauseAudioSource.loop = true;
+        PauseAudioSource.clip = pauseClip;
     }
 
     private void Start()
     {
-        _playerTransform = PlayerController.Instance.GetComponent<Transform>();
+        PlayerTransform = PlayerController.Instance.GetComponent<Transform>();
 
         CannibalsManager.Instance.OnAmbianceChanged.AddListener(HandleAmbianceChanged);
         GameManager.Instance.OnGameStateChanged.AddListener(HandleGameStateChanged);
@@ -48,9 +45,9 @@ public class SoundManager : Singleton<SoundManager>
         }
 
         float timeRandomSound;
-        if (_audioSource.isPlaying)
+        if (Source.isPlaying)
         {
-            var size = _audioSource.clip.length;
+            var size = Source.clip.length;
             timeRandomSound = Random.Range(size, size + 30);
             Invoke(nameof(RandomSound), timeRandomSound);
             return;
@@ -58,7 +55,7 @@ public class SoundManager : Singleton<SoundManager>
 
         var selectedClip = Random.Range(0, ambianceSearchingClip.Length);
         var audioClip = ambianceSearchingClip[selectedClip];
-        var randomPos = GetRandomPoint(_playerTransform.position, 3.0f);
+        var randomPos = GetRandomPoint(PlayerTransform.position, 3.0f);
 
         AudioSource.PlayClipAtPoint(audioClip, randomPos, 1);
 
@@ -71,38 +68,38 @@ public class SoundManager : Singleton<SoundManager>
         switch (actual)
         {
             case Beginning:
-                PauseGameSounds();
+                PauseAll();
                 break;
             case Pause:
-                PauseGameSounds();
-                _pauseAudioSource.Play();
+                PauseAll();
+                PauseAudioSource.Play();
                 break;
             case Playing:
-                Play();
+                PlayAll();
                 break;
             case Won:
-                EndGameSound(win);
+                EndGame(win);
                 break;
             case LostCannibals:
-                EndGameSound(lostCannibals);
+                EndGame(lostCannibals);
                 break;
             case LostTorch:
-                EndGameSound(lostTorch);
+                EndGame(lostTorch);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
         }
     }
 
-    private void Play()
+    private void PlayAll()
     {
-        _findObjectsOfType = FindObjectsOfType<AudioSource>();
-        foreach (var audioSource in _findObjectsOfType)
+        var allAudioSources = FindObjectsOfType<AudioSource>();
+        foreach (var audioSource in allAudioSources)
         {
             audioSource.Play();
         }
 
-        _pauseAudioSource.Stop();
+        PauseAudioSource.Stop();
     }
 
     private void HandleAmbianceChanged(CannibalsState previous, CannibalsState actual)
@@ -113,31 +110,31 @@ public class SoundManager : Singleton<SoundManager>
                 var timeRandomSound = Random.Range(10, 12);
                 Invoke(nameof(RandomSound), timeRandomSound);
                 break;
-            case Following when _audioSource.isPlaying:
+            case Following when Source.isPlaying:
                 return;
             case Following:
                 var selected = Random.Range(0, ambianceFollowingClip.Length);
-                _audioSource.clip = ambianceFollowingClip[selected];
-                _audioSource.Play();
+                Source.clip = ambianceFollowingClip[selected];
+                Source.Play();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
         }
     }
 
-    private void PauseGameSounds()
+    private void PauseAll()
     {
-        _findObjectsOfType = FindObjectsOfType<AudioSource>();
-        foreach (var audioSource in _findObjectsOfType)
+        var allAudioSources = FindObjectsOfType<AudioSource>();
+        foreach (var audioSource in allAudioSources)
         {
             audioSource.Pause();
         }
     }
 
-    private void EndGameSound(AudioClip clip)
+    private void EndGame(AudioClip clip)
     {
-        PauseGameSounds();
-        _audioSource.clip = clip;
-        _audioSource.Play();
+        PauseAll();
+        Source.clip = clip;
+        Source.Play();
     }
 }
