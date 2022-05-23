@@ -1,16 +1,15 @@
 using System;
+using Enums;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using static CannibalsManager;
-using static CannibalsManager.CannibalsState;
-using static GameManager.GameState;
+using static Enums.CannibalsState;
+using static Enums.GameState;
 using Random = UnityEngine.Random;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    #region Audio
-
     [Header("Clips")] [SerializeField] private AudioClip lostCannibals;
     [SerializeField] private AudioClip lostTorch;
     [SerializeField] private AudioClip win;
@@ -20,8 +19,6 @@ public class SoundManager : Singleton<SoundManager>
     private AudioSource _audioSource;
     private AudioSource _pauseAudioSource;
     private AudioSource[] _findObjectsOfType;
-    
-    #endregion
 
     private Transform _playerTransform;
 
@@ -38,14 +35,18 @@ public class SoundManager : Singleton<SoundManager>
     private void Start()
     {
         _playerTransform = PlayerController.Instance.GetComponent<Transform>();
-        
-        CannibalsManager.Instance.onAmbianceChanged.AddListener(HandleAmbianceChanged);
-        GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
+
+        CannibalsManager.Instance.OnAmbianceChanged.AddListener(HandleAmbianceChanged);
+        GameManager.Instance.OnGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
     private void RandomSound()
     {
-        if (CannibalsManager.Instance.GetState() == Following) return;
+        if (CannibalsManager.Instance.State == Following)
+        {
+            return;
+        }
+
         float timeRandomSound;
         if (_audioSource.isPlaying)
         {
@@ -54,13 +55,18 @@ public class SoundManager : Singleton<SoundManager>
             Invoke(nameof(RandomSound), timeRandomSound);
             return;
         }
+
+        var selectedClip = Random.Range(0, ambianceSearchingClip.Length);
+        var audioClip = ambianceSearchingClip[selectedClip];
         var randomPos = GetRandomPoint(_playerTransform.position, 3.0f);
-        AudioSource.PlayClipAtPoint(ambianceSearchingClip[Random.Range(0, ambianceSearchingClip.Length)], randomPos, 1);
+
+        AudioSource.PlayClipAtPoint(audioClip, randomPos, 1);
+
         timeRandomSound = Random.Range(60, 250);
         Invoke(nameof(RandomSound), timeRandomSound);
     }
 
-    private void HandleGameStateChanged(GameManager.GameState previous, GameManager.GameState actual)
+    private void HandleGameStateChanged(GameState previous, GameState actual)
     {
         switch (actual)
         {
@@ -91,7 +97,11 @@ public class SoundManager : Singleton<SoundManager>
     private void Play()
     {
         _findObjectsOfType = FindObjectsOfType<AudioSource>();
-        foreach (var audioSource in _findObjectsOfType) audioSource.Play();
+        foreach (var audioSource in _findObjectsOfType)
+        {
+            audioSource.Play();
+        }
+
         _pauseAudioSource.Stop();
     }
 
@@ -103,9 +113,11 @@ public class SoundManager : Singleton<SoundManager>
                 var timeRandomSound = Random.Range(10, 12);
                 Invoke(nameof(RandomSound), timeRandomSound);
                 break;
+            case Following when _audioSource.isPlaying:
+                return;
             case Following:
-                if (_audioSource.isPlaying) return;
-                _audioSource.clip = ambianceFollowingClip[Random.Range(0, ambianceFollowingClip.Length)];
+                var selected = Random.Range(0, ambianceFollowingClip.Length);
+                _audioSource.clip = ambianceFollowingClip[selected];
                 _audioSource.Play();
                 break;
             default:
@@ -116,7 +128,10 @@ public class SoundManager : Singleton<SoundManager>
     private void PauseGameSounds()
     {
         _findObjectsOfType = FindObjectsOfType<AudioSource>();
-        foreach (var audioSource in _findObjectsOfType) audioSource.Pause();
+        foreach (var audioSource in _findObjectsOfType)
+        {
+            audioSource.Pause();
+        }
     }
 
     private void EndGameSound(AudioClip clip)

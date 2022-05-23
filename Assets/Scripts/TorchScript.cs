@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using static GameManager.GameState;
+using static Enums.GameState;
 
 public class TorchScript : Singleton<TorchScript>
 {
-    private const float DefaultScale = 2.0f;
+    private const float DefaultScale = 2f;
     private const float MINIntensity = 2f;
     private const float MAXIntensity = 2.5f;
     private const float MaxTorchHealth = 5f;
@@ -11,37 +11,46 @@ public class TorchScript : Singleton<TorchScript>
     [SerializeField] private Light fireLight;
     [SerializeField] private ParticleSystem fireParticle;
 
-    private Light _light;
-    
-    private float _percentageHealth;
-
-    private float _torchHealth;
+    private Light TorchLight { get; set; }
+    private float TorchHealth { get; set; }
+    private float PercentageHealth => TorchHealth / MaxTorchHealth;
 
     private void Start()
     {
-        _light = fireLight.GetComponent<Light>();
-        _torchHealth = MaxTorchHealth;
+        TorchLight = fireLight.GetComponent<Light>();
+        TorchHealth = MaxTorchHealth;
     }
 
     private void Update()
     {
-        if (GameManager.Instance.gameState != Playing) return;
-        var random = Random.Range(0.0f, 150.0f);
-        var noise = Mathf.PerlinNoise(random * _percentageHealth, Time.time);
-        _light.intensity = Mathf.Lerp(MINIntensity * _percentageHealth, MAXIntensity * _percentageHealth, noise);
-        fireParticle.transform.localScale = Vector3.one * (DefaultScale * _percentageHealth);
+        if (GameManager.Instance.State != Playing)
+        {
+            return;
+        }
+
+        UpdateTorchHealth();
+        
+        EndGameIfTorchIsDead();
+
+        UpdateParticles();
     }
 
-
-    public void SetRange(bool isRunning)
+    private void UpdateParticles()
     {
-        if (isRunning)
-            _torchHealth -= Time.deltaTime;
-        else
-            _torchHealth = Mathf.Clamp(_torchHealth += Time.deltaTime, 0, MaxTorchHealth);
-
-        _percentageHealth = _torchHealth / MaxTorchHealth;
-        if (_percentageHealth <= 0.01 && GameManager.IsInitialized)
-            GameManager.Instance.SetGameState(LostTorch);
+        var random = Random.Range(0f, 150f);
+        var noise = Mathf.PerlinNoise(random * PercentageHealth, Time.time);
+        TorchLight.intensity = Mathf.Lerp(MINIntensity * PercentageHealth, MAXIntensity * PercentageHealth, noise);
+        fireParticle.transform.localScale = Vector3.one * (DefaultScale * PercentageHealth);
     }
+
+    private void EndGameIfTorchIsDead()
+    {
+        if (PercentageHealth <= 0.01 && GameManager.IsInitialized)
+        {
+            GameManager.Instance.SetGameState(LostTorch);
+        }
+    }
+
+
+    private void UpdateTorchHealth() => TorchHealth = PlayerController.Instance.IsSprinting ? TorchHealth - Time.deltaTime : Mathf.Clamp(TorchHealth += Time.deltaTime, 0, MaxTorchHealth);
 }

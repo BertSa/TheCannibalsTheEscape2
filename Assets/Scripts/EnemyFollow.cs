@@ -1,47 +1,44 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enums;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class EnemyFollow : MonoBehaviour
 {
-    #region Movement
-    
     private const int DistanceToAttack = 4;
     private readonly int _attack = Animator.StringToHash("Attack");
-    [SerializeField] private int speed = 3;
-    private NavMeshAgent _agent;
-    private Transform _player;
-    private Animator _animator;
-    private Rigidbody _rb;
-    
-    #endregion
-    
-    #region Audio
 
-    [Header("Clips")] [SerializeField] private AudioClip[] attackSounds, followingSounds, searchingSounds;
-    private AudioSource[] _clipsPlaying;
+    [SerializeField] private int speed = 3;
+
+    private NavMeshAgent Agent { get; set; }
+    private Transform Player { get; set; }
+    private Animator Anim { get; set; }
+    private Rigidbody Rb { get; set; }
+
+    [Header("Clips")] [SerializeField] private AudioClip[] attackSounds;
+    [SerializeField] private AudioClip[] followingSounds;
+    [SerializeField] private AudioClip[] searchingSounds;
+    private AudioSource[] ClipsPlaying { get; set; }
+    private int ActivePlayerIndex { get; set; }
 
     private readonly IEnumerator[] _fader = new IEnumerator[2];
 
-    private int _activePlayerIndex;
-
     private const int VolumeChangesPerSecond = 15;
-    private const float FadeDuration = 1.0f, Volume = 0.5f;
-
-    #endregion
+    private const float FadeDuration = 1.0f;
+    private const float Volume = 0.5f;
 
     private void Awake()
     {
-        _clipsPlaying = new[]
-        {
-            gameObject.AddComponent<AudioSource>(),
-            gameObject.AddComponent<AudioSource>()
-        };
+        Rb = GetComponent<Rigidbody>();
+        Anim = GetComponent<Animator>();
+        Agent = GetComponent<NavMeshAgent>();
 
-        foreach (var source in _clipsPlaying)
+        ClipsPlaying = new[] { gameObject.AddComponent<AudioSource>(), gameObject.AddComponent<AudioSource>(), };
+
+        foreach (var source in ClipsPlaying)
         {
             source.loop = true;
             source.playOnAwake = false;
@@ -52,45 +49,53 @@ public class EnemyFollow : MonoBehaviour
 
     private void Start()
     {
-        _rb = GetComponent<Rigidbody>();
+        Player = PlayerController.Instance.GetComponent<Transform>();
+        Anim.SetBool(_attack, false);
 
-        _animator = GetComponent<Animator>();
-        _player = PlayerController.Instance.GetComponent<Transform>();
-        _animator.SetBool(_attack, false);
-
-        _agent = GetComponent<NavMeshAgent>();        
-        _agent.speed = speed;
-        _agent.autoRepath = true;
-        _agent.autoBraking = true;
+        Agent.speed = speed;
+        Agent.autoRepath = true;
+        Agent.autoBraking = true;
     }
 
     private void Update()
     {
-        if (
-            GameManager.Instance.gameState != GameManager.GameState.Playing || 
-            CannibalsManager.Instance.GetState() != CannibalsManager.CannibalsState.Following)
+        if (GameManager.Instance.State != GameState.Playing || CannibalsManager.Instance.State != CannibalsState.Following)
+        {
             return;
-        
+        }
+
         var isNearPlayer = IsNearPlayer(DistanceToAttack);
 
-        Play(CannibalsManager.Instance.GetState() == CannibalsManager.CannibalsState.Searching ? searchingSounds : isNearPlayer ? attackSounds : followingSounds);
-            
-        SetDestination(_player.position);
-        
-        RotateToward(_agent.destination);
+        AudioClip[] sounds;
+        if (CannibalsManager.Instance.State == CannibalsState.Searching)
+        {
+            sounds = searchingSounds;
+        }
+        else
+        {
+            sounds = isNearPlayer ? attackSounds : followingSounds;
+        }
 
-        _animator.SetBool(_attack, isNearPlayer);
+        Play(sounds);
+
+        SetDestination(Player.position);
+
+        RotateToward(Agent.destination);
+
+        Anim.SetBool(_attack, isNearPlayer);
     }
 
     public void SetDestination(Vector3 destination)
     {
-        _agent.SetDestination(destination);
+        Agent.SetDestination(destination);
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (!other.gameObject.CompareTag("Player")) return;
-        GameManager.Instance.SetGameState(GameManager.GameState.LostCannibals);
+        if (other.gameObject.CompareTag("Player"))
+        {
+            GameManager.Instance.SetGameState(GameState.LostCannibals);
+        }
     }
 
     private void RotateToward(Vector3 targetPoint)
@@ -101,53 +106,73 @@ public class EnemyFollow : MonoBehaviour
 
         var t = transform;
 
-        t.rotation = Quaternion.Slerp(t.rotation, rotation, Time.deltaTime * _agent.angularSpeed);
+        t.rotation = Quaternion.Slerp(t.rotation, rotation, Time.deltaTime * Agent.angularSpeed);
 
         var movementVelocity = t.forward * speed;
 
         movementVelocity.y = -.8f;
 
-        _rb.velocity = movementVelocity;
+        Rb.velocity = movementVelocity;
     }
 
     private bool IsNearPlayer(float distance)
     {
         if (distance <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(distance) + " cannot be lower or equals than 0");
+        }
 
-        return Vector3.Distance(transform.position, _player.position) <= distance;
+        return Vector3.Distance(transform.position, Player.position) <= distance;
     }
 
     private void Play(IReadOnlyList<AudioClip> clips)
     {
-        var clip = clips[Random.Range(0, clips.Count)];
-        if (clips == followingSounds && _clipsPlaying[_activePlayerIndex].isPlaying || clip == _clipsPlaying[_activePlayerIndex].clip)
+        if (clips == followingSounds && ClipsPlaying[ActivePlayerIndex].isPlaying)
+        {
             return;
+        }
+
+        var selectedSound = Random.Range(0, clips.Count);
+        var clip = clips[selectedSound];
+
+        if (clip == ClipsPlaying[ActivePlayerIndex].clip)
+        {
+            return;
+        }
 
         foreach (var enumerator in _fader)
-            if (enumerator != null)
-                StopCoroutine(enumerator);
-
-        if (_clipsPlaying[_activePlayerIndex].volume > 0)
         {
-            _fader[0] = FadeAudioSource(_clipsPlaying[_activePlayerIndex], FadeDuration, 0.0f, () => { _fader[0] = null; });
+            if (enumerator != null)
+            {
+                StopCoroutine(enumerator);
+            }
+        }
+
+        if (ClipsPlaying[ActivePlayerIndex].volume > 0)
+        {
+            _fader[0] = FadeAudioSource(ClipsPlaying[ActivePlayerIndex], FadeDuration, 0.0f, () =>
+            {
+                _fader[0] = null;
+            });
             StartCoroutine(_fader[0]);
         }
 
-        var nextPlayer = (_activePlayerIndex + 1) % _clipsPlaying.Length;
-        _clipsPlaying[nextPlayer].clip = clip;
-        _clipsPlaying[nextPlayer].Play();
-        _fader[1] = FadeAudioSource(_clipsPlaying[nextPlayer], FadeDuration, Volume, () => { _fader[1] = null; });
+        var nextPlayer = (ActivePlayerIndex + 1) % ClipsPlaying.Length;
+        ClipsPlaying[nextPlayer].clip = clip;
+        ClipsPlaying[nextPlayer].Play();
+        _fader[1] = FadeAudioSource(ClipsPlaying[nextPlayer], FadeDuration, Volume, () =>
+        {
+            _fader[1] = null;
+        });
         StartCoroutine(_fader[1]);
 
-        _activePlayerIndex = nextPlayer;
+        ActivePlayerIndex = nextPlayer;
     }
 
 
-    private static IEnumerator FadeAudioSource(AudioSource player, float duration, float targetVolume,
-        Action finishedCallback)
+    private static IEnumerator FadeAudioSource(AudioSource player, float duration, float targetVolume, Action finishedCallback)
     {
-        var steps = (int) (VolumeChangesPerSecond * duration);
+        var steps = (int)(VolumeChangesPerSecond * duration);
         var stepTime = duration / steps;
         var stepSize = (targetVolume - player.volume) / steps;
 

@@ -11,24 +11,35 @@ public class MoveImage : MonoBehaviour
     [SerializeField] private bool isFixed;
 
     private const float FadeTime = 5;
-    private readonly YieldInstruction _fadeInstruction = new YieldInstruction();
+    private readonly YieldInstruction _fadeInstruction = new();
     private bool _isActivated;
     private float _targetAlpha;
     private Fade _fade;
 
     private void Update()
     {
-        if (!_isActivated || isFixed) return;
+        if (!_isActivated || isFixed)
+        {
+            return;
+        }
 
         transform.position += new Vector3(moveX, moveY);
-        if (transform.position.y > 300) return;
-        if (_fade == Fade.FadeOut) StartCoroutine(FadeOut());
+        if (transform.position.y > 300)
+        {
+            return;
+        }
+
+        if (_fade == Fade.FadeOut)
+        {
+            StartCoroutine(FadeOut());
+        }
+
         isFixed = true;
     }
 
     private IEnumerator FadeOut()
     {
-        var elapsedTime = 0.0f;
+        var elapsedTime = 0f;
         var c = mImg.color;
         while (elapsedTime < FadeTime)
         {
@@ -44,7 +55,7 @@ public class MoveImage : MonoBehaviour
 
     private IEnumerator FadeIn()
     {
-        var elapsedTime = 0.0f;
+        var elapsedTime = 0f;
         var c = mImg.color;
         while (elapsedTime < FadeTime)
         {
@@ -61,7 +72,10 @@ public class MoveImage : MonoBehaviour
     {
         _isActivated = true;
         _fade = fadeNew;
-        if (_fade == Fade.FadeIn) StartCoroutine(FadeIn());
+        if (_fade == Fade.FadeIn)
+        {
+            StartCoroutine(FadeIn());
+        }
     }
 
     private void NextSlide()

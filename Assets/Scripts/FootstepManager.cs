@@ -1,16 +1,13 @@
 ﻿using System;
 using UnityEngine;
-using static GameManager.GameState;
+using static Enums.GameState;
 
 public class FootstepManager : MonoBehaviour
 {
-    #region Audio
-    
     [Header("Audio")] private AudioSource _audioSource;
-    [SerializeField] private AudioClip running, walking;
-    
-    #endregion
-    
+    [SerializeField] private AudioClip running;
+    [SerializeField] private AudioClip walking;
+
     private PlayerController _player;
 
     private void Awake()
@@ -26,20 +23,33 @@ public class FootstepManager : MonoBehaviour
 
     private void Update()
     {
-        if (!_player.isSprinting && !_player.isWalking && !_audioSource.isPlaying ||
-            GameManager.Instance.gameState != Playing) return;
-        
-        if (_player.isSprinting)
+        if (GameManager.Instance.State != Playing)
+        {
+            return;
+        }
+
+        if (!_player.IsSprinting && !_player.IsWalking && !_audioSource.isPlaying)
+        {
+            return;
+        }
+
+        if (_player.IsSprinting)
         {
             if (_audioSource.isPlaying && _audioSource.clip == running)
+            {
                 return;
+            }
+
             _audioSource.clip = running;
             _audioSource.Play();
         }
-        else if (_player.isWalking)
+        else if (_player.IsWalking)
         {
             if (_audioSource.isPlaying && _audioSource.clip == walking)
+            {
                 return;
+            }
+
             _audioSource.clip = walking;
             _audioSource.Play();
         }

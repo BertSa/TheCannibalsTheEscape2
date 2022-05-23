@@ -1,13 +1,14 @@
 using System;
+using Enums;
 using UnityEngine.Events;
 
 [Serializable]
 public class Events
 {
-    public class EventGameState : UnityEvent<GameManager.GameState, GameManager.GameState>
+    public class EventGameState : UnityEvent<GameState, GameState>
     {}
     
-    public class EventAmbiance : UnityEvent<CannibalsManager.CannibalsState, CannibalsManager.CannibalsState>
+    public class EventAmbiance : UnityEvent<CannibalsState, CannibalsState>
     {}
     
 }

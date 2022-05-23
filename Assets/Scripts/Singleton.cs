@@ -8,9 +8,12 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 
     protected virtual void Awake()
     {
-        if (!IsInitialized)
-            Instance = (T) this;
-        else
-            print("[Singleton] trying to instantiate a second instance of singleton class");
+        if (IsInitialized)
+        {
+            Debug.Log("[Singleton] trying to instantiate a second instance of singleton class");
+            return;
+        }
+
+        Instance = (T)this;
     }
 }
