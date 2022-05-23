@@ -1,137 +1,77 @@
-﻿using UnityEngine;
-using static GameManager.GameState;
+﻿using Enums;
+using UnityEngine;
 
 public class PlayerController : Singleton<PlayerController>
 {
-    private EnemyFollow[] _cannibals;
-
-    #region Camera Movement
-
-    private const float MAXLookAngle = 50f;
-
-    [SerializeField] private Camera playerCamera;
-
-    private const float SprintFOVStepTime = 10f;
-    private const float FOV = 60f;
-    private const float SprintFOV = 80f;
-    private float _yaw;
-    private float _pitch;
-
-    #endregion
-
-    #region Movement
-
-    private Rigidbody _rb;
     private const float WalkSpeed = 250f;
-    private const float MAXVelocityChange = 450f;
-
-    [HideInInspector] public bool isWalking;
-    
-    private const float MouseSensitivity = 60f;
+    private const float SprintSpeed = 500f;
+    private const float MaxVelocityChange = 450f;
+    private const float JumpPower = 5f;
     private const KeyCode SprintKey = KeyCode.LeftShift;
     private const KeyCode JumpKey = KeyCode.Space;
 
-    #region Sprint
+    private Rigidbody Rb { get; set; }
+    public bool IsWalking { get; private set; }
+    public bool IsSprinting { get; private set; }
+    private bool IsGrounded { get; set; }
 
-    private const float SprintSpeed = 500f;
-
-    [HideInInspector] public bool isSprinting;
-
-    #endregion
-
-    #region Jump
-
-    private const float JumpPower = 5f;
-
-    private bool _isGrounded;
-
-    #endregion
-
-    #endregion
+    private bool IsPlaying => GameManager.Instance.State == GameState.Playing;
 
     protected override void Awake()
     {
         base.Awake();
-        _rb = GetComponent<Rigidbody>();
-
-        playerCamera.fieldOfView = FOV;
-    }
-
-    private void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
+        Rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        Cursor.lockState = GameManager.Instance.gameState == Playing ? CursorLockMode.Locked : CursorLockMode.None;
-        
-        if (GameManager.Instance.gameState != Playing) return;
-        
-        #region Camera
+        if (!IsPlaying)
+        {
+            return;
+        }
 
-        _yaw += MouseSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime;
-        _pitch -= MouseSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime;
+        Jump();
 
-        playerCamera.transform.eulerAngles = new Vector3(Mathf.Clamp(_pitch, -MAXLookAngle, MAXLookAngle), _yaw);
-        transform.eulerAngles = Vector3.up * _yaw;
-
-        #endregion
-
-        #region Sprint
-
-        var fovResult = isSprinting ? SprintFOV : FOV;
-        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, fovResult, SprintFOVStepTime * Time.deltaTime);
-
-        TorchScript.Instance.SetRange(isSprinting);
-
-        #endregion
-
-        #region Jump
-
-        if (Input.GetKeyDown(JumpKey) && _isGrounded) Jump();
         CheckGround();
-
-        #endregion
     }
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance.gameState != Playing) return;
-
-        #region Movement
-
-        var targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        isWalking = targetVelocity.x != 0 || targetVelocity.z != 0 && _isGrounded;
-        Vector3 velocityChange;
-        if (targetVelocity.z > 0 && Input.GetKey(SprintKey))
-        {
-            targetVelocity = transform.TransformDirection(targetVelocity) * (SprintSpeed * Time.deltaTime);
-
-            velocityChange = GetVelocityChange(targetVelocity - _rb.velocity);
-
-            if (isWalking && velocityChange.x != 0 || velocityChange.z != 0)
-                isSprinting = true;
-        }
-        else
-        {
-            isSprinting = false;
-
-            targetVelocity = transform.TransformDirection(targetVelocity) * (WalkSpeed * Time.deltaTime);
-
-            velocityChange = GetVelocityChange(targetVelocity - _rb.velocity);
-        }
-        _rb.AddForce(velocityChange, ForceMode.VelocityChange);
-
-        #endregion
+        Move();
     }
 
-    private Vector3 GetVelocityChange(Vector3 vChange)
+    private void Move()
     {
-        vChange.x = Mathf.Clamp(vChange.x, -MAXVelocityChange, MAXVelocityChange);
-        vChange.z = Mathf.Clamp(vChange.z, -MAXVelocityChange, MAXVelocityChange);
-        vChange.y = 0;
-        return vChange;
+        if (!IsPlaying)
+        {
+            return;
+        }
+
+        var targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        IsWalking = IsGrounded && targetVelocity.x != 0 || targetVelocity.z != 0;
+
+        IsSprinting = targetVelocity.z > 0 && Input.GetKey(SprintKey);
+
+        var velocityChange = GetVelocityChange(targetVelocity);
+
+        Rb.AddForce(velocityChange, ForceMode.VelocityChange);
+    }
+
+    private Vector3 GetVelocityChange(Vector3 targetVelocity)
+    {
+        var speed = IsSprinting ? SprintSpeed : WalkSpeed;
+
+        targetVelocity = transform.TransformDirection(targetVelocity) * (speed * Time.deltaTime);
+
+        var velocityChange = targetVelocity - Rb.velocity;
+
+        velocityChange.x = Mathf.Clamp(velocityChange.x, -MaxVelocityChange, MaxVelocityChange);
+        velocityChange.z = Mathf.Clamp(velocityChange.z, -MaxVelocityChange, MaxVelocityChange);
+        velocityChange.y = 0;
+
+
+        return velocityChange;
     }
 
     private void CheckGround()
@@ -140,13 +80,23 @@ public class PlayerController : Singleton<PlayerController>
         var position = transform.position;
         var direction = transform.TransformDirection(Vector3.down);
 
-        _isGrounded = Physics.Raycast(position, direction, out _, distance);
+        IsGrounded = Physics.Raycast(position, direction, out _, distance);
     }
 
     private void Jump()
     {
-        if (!_isGrounded) return;
-        _rb.AddForce(0f, JumpPower, 0f, ForceMode.Impulse);
-        _isGrounded = false;
+        if (!IsGrounded)
+        {
+            return;
+        }
+
+        if (!Input.GetKeyDown(JumpKey))
+        {
+            return;
+        }
+
+        Rb.AddForce(0f, JumpPower, 0f, ForceMode.Impulse);
+
+        IsGrounded = false;
     }
 }

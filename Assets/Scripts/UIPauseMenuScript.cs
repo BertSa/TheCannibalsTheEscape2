@@ -1,11 +1,11 @@
-﻿
+﻿using Enums;
 using UnityEngine.SceneManagement;
 
-public class PauseMenuScript : BootMenuScript
+public class UIPauseMenuScript : UIBootMenuScript
 {
     protected override void Begin()
     {
-        GameManager.Instance.SetGameState(GameManager.GameState.Playing);
+        GameManager.Instance.UpdateGameState(GameState.Playing);
     }
 
     protected override void Exit()

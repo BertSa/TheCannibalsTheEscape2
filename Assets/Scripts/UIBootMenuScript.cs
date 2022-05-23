@@ -2,15 +2,16 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class BootMenuScript : MonoBehaviour
+public class UIBootMenuScript : MonoBehaviour
 {
-    [SerializeField] private Button start, quit;
+    [SerializeField] private Button start;
+    [SerializeField] private Button quit;
 
     private void Start()
     {
         start.onClick = new Button.ButtonClickedEvent();
         quit.onClick = new Button.ButtonClickedEvent();
-        
+
         start.onClick.AddListener(Begin);
         quit.onClick.AddListener(Exit);
     }

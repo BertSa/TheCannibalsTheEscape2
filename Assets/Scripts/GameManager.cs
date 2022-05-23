@@ -1,14 +1,13 @@
-﻿using UnityEngine;
+﻿using Enums;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using static GameManager.GameState;
-using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
-    [HideInInspector] public GameState gameState = Beginning;
-    public Events.EventGameState onGameStateChanged = new Events.EventGameState();
-    private bool _pausable = true;
-    
+    public GameState State { get; private set; } = GameState.Beginning;
+    public readonly Events.EventGameState OnGameStateChanged = new();
+    private bool Pausable { get; set; } = true;
+
     protected override void Awake()
     {
         base.Awake();
@@ -17,47 +16,50 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
+        if (InitExitOrReturnIfNoExitFound())
+        {
+            return;
+        }
+
+        UpdateGameState(GameState.Beginning);
+    }
+
+    private bool InitExitOrReturnIfNoExitFound()
+    {
         var potentialExits = FindObjectsOfType<PotentialExit>();
-        if (potentialExits.Length < 1) return;
-        potentialExits[Random.Range(0, potentialExits.Length)].SetAsExit(true);
-        SetGameState(Beginning);
+        if (potentialExits.Length < 1)
+        {
+            return true;
+        }
+
+        var selectedExit = Random.Range(0, potentialExits.Length);
+        potentialExits[selectedExit].SetAsExit(true);
+        return false;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P) && _pausable)
+        if (Input.GetKeyDown(KeyCode.P) && Pausable)
+        {
             TogglePause();
+        }
     }
 
-    public void SetGameState(GameState actual)
+    public void UpdateGameState(GameState actual)
     {
-        Time.timeScale = actual == Playing ? 1 : 0;
-        
-        onGameStateChanged.Invoke(gameState, actual);
-        
-        gameState = actual;
-        
-        if (gameState != Beginning && gameState != Playing && gameState != Pause)
-            _pausable = false;
+        Time.timeScale = actual == GameState.Playing ? 1 : 0;
+
+        OnGameStateChanged.Invoke(State, actual);
+
+        State = actual;
+
+        if (State != GameState.Beginning && State != GameState.Playing && State != GameState.Pause)
+        {
+            Pausable = false;
+        }
     }
 
-    private void TogglePause()
-    {
-        SetGameState(gameState == Playing ? Pause : Playing);
-    }
+    private void TogglePause() => UpdateGameState(State == GameState.Playing ? GameState.Pause : GameState.Playing);
 
-    public enum GameState
-    {
-        Playing,
-        LostCannibals,
-        LostTorch,
-        Won,
-        Pause,
-        Beginning
-    }
-
-    public static void RestartGame()
-    {
-        SceneManager.LoadScene("BootMenu");
-    }
+    public static void RestartGame() => SceneManager.LoadScene("BootMenu");
 }

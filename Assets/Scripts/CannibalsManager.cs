@@ -1,55 +1,59 @@
 using System;
+using Enums;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class CannibalsManager : Singleton<CannibalsManager>
 {
-    public Events.EventAmbiance onAmbianceChanged = new Events.EventAmbiance();
-    
-    [SerializeField] private CannibalsState state = CannibalsState.Following;
+    public readonly Events.EventAmbiance OnAmbianceChanged = new();
 
-    private EnemyFollow[] _cannibals;
-    private Transform _player;
+    public CannibalsState State { get; private set; } = CannibalsState.Following;
+
+    private EnemyFollow[] Cannibals { get; set; }
+    private Transform Player { get; set; }
 
     private void Start()
     {
-        _cannibals = FindObjectsOfType<EnemyFollow>();
-        _player = PlayerController.Instance.GetComponent<Transform>();
-        GameManager.Instance.onGameStateChanged.AddListener(HandleGameStateChanged);
+        Cannibals = FindObjectsOfType<EnemyFollow>();
+        Player = PlayerController.Instance.GetComponent<Transform>();
+        GameManager.Instance.OnGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
-    private void HandleGameStateChanged(GameManager.GameState oldGameState, GameManager.GameState actual)
+    private void HandleGameStateChanged(GameState oldGameState, GameState actual)
     {
-        switch (actual)
+        if (actual != GameState.Playing)
         {
-            case GameManager.GameState.Playing:
-                if (oldGameState == GameManager.GameState.Beginning)
-                    SetState(CannibalsState.Following);
-                InvokeRepeating(nameof(FollowTrace), 0, 5);
-                break;
-            case GameManager.GameState.Beginning:
-            case GameManager.GameState.LostCannibals:
-            case GameManager.GameState.LostTorch:
-            case GameManager.GameState.Won:
-            case GameManager.GameState.Pause:
-                CancelInvoke(nameof(FollowTrace));
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(actual), actual, null);
+            CancelInvoke(nameof(FollowTrace));
         }
+
+        if (oldGameState == GameState.Beginning)
+        {
+            UpdateState(CannibalsState.Following);
+        }
+
+        InvokeRepeating(nameof(FollowTrace), 0, 5);
     }
 
     private void FollowTrace()
     {
-        if (state == CannibalsState.Following || 
-            GameManager.Instance.gameState != GameManager.GameState.Playing)
+        if (State == CannibalsState.Following)
+        {
             return;
+        }
 
-        foreach (var cannibal in _cannibals)
-            cannibal.SetDestination(GetRandomPoint(_player.position, AreaStrategy.Instance.GetRadius()));
+        if (GameManager.Instance.State != GameState.Playing)
+        {
+            return;
+        }
+
+        foreach (var cannibal in Cannibals)
+        {
+            var randomPoint = GetRandomPoint(Player.position, AreaStrategy.Instance.GetRadius());
+            cannibal.SetDestination(randomPoint);
+        }
     }
-    
+
     public static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
     {
         var randomPos = Random.insideUnitSphere * maxDistance + center;
@@ -59,20 +63,9 @@ public class CannibalsManager : Singleton<CannibalsManager>
         return hit.position;
     }
 
-    public void SetState(CannibalsState actual)
+    public void UpdateState(CannibalsState actual)
     {
-        onAmbianceChanged.Invoke(state, actual);
-        state = actual;
-    }
-
-    public enum CannibalsState
-    {
-        Following,
-        Searching
-    }
-
-    public CannibalsState GetState()
-    {
-        return state;
+        OnAmbianceChanged.Invoke(State, actual);
+        State = actual;
     }
 }
